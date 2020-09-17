@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 from tqdm import trange
 from numba import jit
 from scipy.ndimage.filters import convolve
+from pathlib import Path as path
 
 #This is to ignore NumbaWarnings and NumbaDeprecationWarnings issued by @jit
 warnings.filterwarnings("ignore", category=Warning)
@@ -144,10 +145,10 @@ def sobel(img):
 	global firstCalculation
 	if firstCalculation == True:
 		SOBEL_EDGE_PATH = EDGE_DETECTION_PATH + "sobel.jpg"
-		cv2.imwrite(os.path.expanduser(SOBEL_EDGE_PATH), np.rot90(sobel, 3, (0, 1)))
+		cv2.imwrite(SOBEL_EDGE_PATH, np.rot90(sobel, 3, (0, 1)))
 
 		SOBEL_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_sobel.jpg"
-		cv2.imwrite(os.path.expanduser(SOBEL_ENERGY_PATH), np.rot90(energy_map, 3, (0, 1)))
+		cv2.imwrite(SOBEL_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
 		firstCalculation = False
 
 	return energy_map
@@ -176,10 +177,10 @@ def prewitt(img):
 	global firstCalculation
 	if firstCalculation == True:
 		PREWITT_EDGE_PATH = EDGE_DETECTION_PATH + "prewitt.jpg"
-		cv2.imwrite(os.path.expanduser(PREWITT_EDGE_PATH), np.rot90(prewitt, 3, (0, 1)))
+		cv2.imwrite(PREWITT_EDGE_PATH, np.rot90(prewitt, 3, (0, 1)))
 
 		PREWITT_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_prewitt.jpg"
-		cv2.imwrite(os.path.expanduser(PREWITT_ENERGY_PATH), np.rot90(energy_map, 3, (0, 1)))
+		cv2.imwrite(PREWITT_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
 		firstCalculation = False
 
 	return energy_map
@@ -199,10 +200,10 @@ def laplacian(img):
 	global firstCalculation
 	if firstCalculation == True:
 		LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
-		cv2.imwrite(os.path.expanduser(LAPLACIAN_EDGE_PATH), np.rot90(laplacian, 3, (0, 1)))
+		cv2.imwrite(LAPLACIAN_EDGE_PATH, np.rot90(laplacian, 3, (0, 1)))
 
 		LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_laplacian.jpg"
-		cv2.imwrite(os.path.expanduser(LAPLACIAN_ENERGY_PATH), np.rot90(energy_map, 3, (0, 1)))
+		cv2.imwrite(LAPLACIAN_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
 		firstCalculation = False
 	return energy_map
 
@@ -228,13 +229,15 @@ def roberts(img):
 	global firstCalculation
 	if firstCalculation == True:
 		ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
-		cv2.imwrite(os.path.expanduser(ROBERTS_EDGE_PATH), np.rot90(roberts, 3, (0, 1)))
+		cv2.imwrite(ROBERTS_EDGE_PATH, np.rot90(roberts, 3, (0, 1)))
 
 		ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_roberts.jpg"
-		cv2.imwrite(os.path.expanduser(ROBERTS_ENERGY_PATH), np.rot90(energy_map, 3, (0, 1)))
+		cv2.imwrite(ROBERTS_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
 		firstCalculation = False
 
 	return energy_map
+
+
 #Main program
 if __name__ == '__main__':
 	ap = argparse.ArgumentParser()
@@ -248,12 +251,18 @@ if __name__ == '__main__':
 
 	IMG_NAME, OUTPUT_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["out"], args["scale"], args["seam"], args["energy"]
 
+	#create results directory
+	path("../results").mkdir(parents=True, exist_ok=True)
+	path("../results/resized_images/").mkdir(parents=True, exist_ok=True)
+	path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
+	path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
+
 	#paths definition
-	IMG_PATH = "~/Desktop/workspace/seamCarvingGK/images/" + IMG_NAME
-	OUTPUT_PATH = "~/Desktop/workspace/seamCarvingGK/results/resized_images/" + OUTPUT_NAME
-	ENERGY_MAP_PATH = "~/Desktop/workspace/seamCarvingGK/results/energy_maps/"
-	EDGE_DETECTION_PATH = "~/Desktop/workspace/seamCarvingGK/results/edge_detection_images/"
-	img = cv2.imread(os.path.expanduser(IMG_PATH))
+	IMG_PATH = "../images/" + IMG_NAME
+	OUTPUT_PATH = "../results/resized_images/" + OUTPUT_NAME
+	ENERGY_MAP_PATH = "../results/energy_maps/"
+	EDGE_DETECTION_PATH = "../results/edge_detection_images/"
+	img = cv2.imread(IMG_PATH)
 
 	#Sets the boolean used to save the energy map
 	firstCalculation = True
@@ -269,5 +278,5 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 
-	OUTPUT_PATH = "~/Desktop/workspace/seamCarvingGK/results/resized_images/" + OUTPUT_NAME
-	cv2.imwrite(os.path.expanduser(OUTPUT_PATH), out)
+	OUTPUT_PATH = "../results/resized_images/" + OUTPUT_NAME
+	cv2.imwrite(OUTPUT_PATH, out)
