@@ -1,12 +1,12 @@
 # Seam Carving
 
-description
+project description
 
 
 ## Context
 
 
-The program was developed and executed in a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS. The same program was tested afterwards in a Dell notebook running Ubuntu 16.0.4.
+The program was developed and executed in a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS.
 
 
 ## Installation
@@ -17,7 +17,7 @@ It is recommended to use the program in a virtual environment. To create a virtu
 python3 -m pip install virtualenv
 ```
 
-After that, navigate to the folder where the 'main' folder for the scripts is located. Then we can create the virtual environment using the following command:
+After that, navigate to the folder where the 'src' folder for the scripts is located. Then we can create the virtual environment using the following command:
 
 ```bash
 python3 -m venv env
@@ -29,42 +29,11 @@ You'll notice that the 'env' folder was created in your workspace. Now we need t
 source env/bin/activate
 ```
 
-After activating the environment, any packages installed will be restricted to that environment. To retrieve the list of packages installed in your environment, you can use the following command:
+To install the required packages, use the following command:
 
 ```bash
-python3 -m pip list
-```
-
-These are the packages installed in the virtual enviroment when this guide was written:
-
-```bash
-Package         Version
---------------- --------
-cycler          0.10.0
-kiwisolver      1.2.0
-llvmlite        0.33.0
-matplotlib      3.3.0
-numba           0.50.1
-numpy           1.19.1
-opencv-python   4.3.0.36
-Pillow          7.2.0
-pip             20.2
-pyparsing       2.4.7
-python-dateutil 2.8.1
-scipy           1.5.2
-setuptools      40.8.0
-six             1.15.0
-tqdm            4.48.0
-```
-
-You can now install the required packages using the following command:
-
-```bash
-python3 -m pip install <package name>
 python3 -m pip install -r requirements.txt
 ```
-
-During the installation of each package, replace the <package name> with the name of the package displayed in the list provided earlier.
 
 To leave the virtual environment, just run the following command:
 
@@ -74,16 +43,16 @@ deactivate
 
 ## Usage
 
-First, navigate to your workspace folder where the 'main', 'images' and 'results' folders are located. Then, activate your virtual environment created in the 'Installation' section:
+First, navigate to your workspace folder where the 'src', 'images' folders are located. Then, activate your virtual environment created in the 'Installation' section:
 
 ```bash
 source env/bin/activate
 ```
 
-Once in the virtual environment, open the 'main' folder:
+Once in the virtual environment, open the 'src' folder:
 
 ```bash
-cd main
+cd src
 ```
 
 Now you can run the program using the following command:
