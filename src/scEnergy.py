@@ -7,7 +7,6 @@
 #EXAMPLE: (terminal)
 #python3 scEnergy.py -in image.jpg -out result.jpg -scale 0.5 -seam h -energy s
 
-
 import sys
 import os
 import cv2
@@ -236,7 +235,6 @@ def roberts(img):
 		firstCalculation = False
 
 	return energy_map
-
 
 #Main program
 if __name__ == '__main__':
