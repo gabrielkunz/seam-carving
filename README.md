@@ -1,6 +1,8 @@
 # Seam Carving
 
-project description
+Project description
+
+Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 
 
 ## Context
