@@ -8,7 +8,7 @@ Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 ## Context
 
 
-The program was developed and executed in a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS.
+The program was developed and tested on a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS.
 
 
 ## Installation
