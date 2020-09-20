@@ -1,19 +1,19 @@
 Test list:
 
-python3 scEnergy.py -in test.png -scale 0.5 -seam h -energy all
-python3 scEnergy.py -in test.png -scale 0.5 -seam h -energy s
-python3 scEnergy.py -in test.png -scale 0.5 -seam h -energy p
-python3 scEnergy.py -in test.png -scale 0.5 -seam h -energy l
-python3 scEnergy.py -in test.png -scale 0.5 -seam h -energy r
+python3 sc.py -in test.png -scale 0.5 -seam h -energy all
+python3 sc.py -in test.png -scale 0.5 -seam h -energy s
+python3 sc.py -in test.png -scale 0.5 -seam h -energy p
+python3 sc.py -in test.png -scale 0.5 -seam h -energy l
+python3 sc.py -in test.png -scale 0.5 -seam h -energy r
 
-python3 scEnergy.py -in image.jpg -scale 0.5 -seam h -energy all
-python3 scEnergy.py -in image.jpg -scale 0.5 -seam h -energy s
-python3 scEnergy.py -in image.jpg -scale 0.5 -seam h -energy p
-python3 scEnergy.py -in image.jpg -scale 0.5 -seam h -energy l
-python3 scEnergy.py -in image.jpg -scale 0.5 -seam h -energy r
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy all
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy s
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy p
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy l
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy r
 
-python3 scEnergy.py -in image2.jpg -scale 0.5 -seam h -energy all
-python3 scEnergy.py -in image2.jpg -scale 0.5 -seam h -energy s
-python3 scEnergy.py -in image2.jpg -scale 0.5 -seam h -energy p
-python3 scEnergy.py -in image2.jpg -scale 0.5 -seam h -energy l
-python3 scEnergy.py -in image2.jpg -scale 0.5 -seam h -energy r
+python3 sc.py -in image2.jpg -scale 0.5 -seam h -energy all
+python3 sc.py -in image2.jpg -scale 0.5 -seam h -energy s
+python3 sc.py -in image2.jpg -scale 0.5 -seam h -energy p
+python3 sc.py -in image2.jpg -scale 0.5 -seam h -energy l
+python3 sc.py -in image2.jpg -scale 0.5 -seam h -energy r
