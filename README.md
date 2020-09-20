@@ -59,29 +59,27 @@ cd src
 
 Now you can run the program using the following command:
 ```bash
-python3 scEnergy.py -in <image filename (in /images/ folder)> -out <output filename> -scale <downsizing scale> -seam <seam orientation, v for vertical h for horizontal> -energy <energy algorithm (e.g. s for sobel)>
+python3 sc.py -in <image filename (in /images/ folder)> -scale <downsizing scale> -seam <seam orientation, v for vertical h for horizontal> -energy <energy algorithm (e.g. s for sobel)>
 ```
 
 As for example:
 
 ```bash
-python3 scEnergy.py -in image.jpg -out result.jpg -scale 0.5 -seam h -energy s
+python3 sc.py -in image.jpg -scale 0.5 -seam h -energy s
 ```
 
 In case you need help with the parameters, just run the command below:
 
 ```bash
-python3 scEnergy.py -h
+python3 sc.py -h
 ```
 
 ```bash
-usage: scEnergy.py [-h] -in IN -out OUT -scale SCALE -seam SEAM
-                   [-energy ENERGY]
+usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY]
 
 optional arguments:
   -h, --help      show this help message and exit
   -in IN          Path to input image
-  -out OUT        Output image file name
   -scale SCALE    Downsizing scale. e.g. 0.5
   -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam
   -energy ENERGY  Energy algorithm (s = Sobel, p = Prewitt)
