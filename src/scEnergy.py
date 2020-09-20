@@ -241,13 +241,12 @@ if __name__ == '__main__':
 	ap = argparse.ArgumentParser()
 
 	ap.add_argument("-in", help="Path to input image", required=True)
-	ap.add_argument("-out", help="Output image file name", required=True)
 	ap.add_argument("-scale", help="Downsizing scale. e.g. 0.5", required=True, type=float, default=0.5)
 	ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam", required=True)
 	ap.add_argument("-energy", help="Energy algorithm (s = Sobel, p = Prewitt)", required=False, default='s')
 	args = vars(ap.parse_args())
 
-	IMG_NAME, OUTPUT_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["out"], args["scale"], args["seam"], args["energy"]
+	IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["scale"], args["seam"], args["energy"]
 
 	#create results directory
 	path("../results").mkdir(parents=True, exist_ok=True)
@@ -255,9 +254,11 @@ if __name__ == '__main__':
 	path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
 	path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
+	#Number of diferent resize algorithms existing in this program
+	ALGORITHMS = ['s', 'p', 'l', 'r']
+
 	#paths definition
 	IMG_PATH = "../images/" + IMG_NAME
-	OUTPUT_PATH = "../results/resized_images/" + OUTPUT_NAME
 	ENERGY_MAP_PATH = "../results/energy_maps/"
 	EDGE_DETECTION_PATH = "../results/edge_detection_images/"
 	img = cv2.imread(IMG_PATH)
@@ -265,16 +266,42 @@ if __name__ == '__main__':
 	#Sets the boolean used to save the energy map
 	firstCalculation = True
 
-	if SEAM_ORIENTATION == 'h':
-		img = np.rot90(img, 1, (0, 1))
-		img = resize(img, SCALE)
-		out = np.rot90(img, 3, (0, 1))
-	elif SEAM_ORIENTATION == 'v':
-		out = resize(img, SCALE)
-	else:
-		print("Error: invalid arguments. Use -h argument for help")
-		sys.exit(1)
+	#Run program for all algorithms implemented at the momvent
+	if ENERGY_ALGORITHM == "all":
+		for a in ALGORITHMS:
+			img = cv2.imread(IMG_PATH)
+			ENERGY_ALGORITHM = a
+			if SEAM_ORIENTATION == 'h':
+				print("Performing seam carving with energy algorithm " + ENERGY_ALGORITHM + "...")
+				img = np.rot90(img, 1, (0, 1))
+				img = resize(img, SCALE)
+				out = np.rot90(img, 3, (0, 1))
+			elif SEAM_ORIENTATION == 'v':
+				print("Performing seam carving with energy algorithm " + ENERGY_ALGORITHM + "...")
+				out = resize(img, SCALE)
+			else:
+				print("Error: invalid arguments. Use -h argument for help")
+				sys.exit(1)
 
+			#Saves results
+			OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+			cv2.imwrite(OUTPUT_PATH, out)
+			print("Seam carving with energy algorithm " + ENERGY_ALGORITHM + " completed")
 
-	OUTPUT_PATH = "../results/resized_images/" + OUTPUT_NAME
-	cv2.imwrite(OUTPUT_PATH, out)
+			#Resets the boolean to save the energy map for the other algorithms
+			firstCalculation = True
+
+	else: #Run program for a specific algorithm
+		img = cv2.imread(IMG_PATH)
+		if SEAM_ORIENTATION == 'h':
+				img = np.rot90(img, 1, (0, 1))
+				img = resize(img, SCALE)
+				out = np.rot90(img, 3, (0, 1))
+		elif SEAM_ORIENTATION == 'v':
+			out = resize(img, SCALE)
+		else:
+			print("Error: invalid arguments. Use -h argument for help")
+			sys.exit(1)
+
+		OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+		cv2.imwrite(OUTPUT_PATH, out)
