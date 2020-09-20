@@ -82,7 +82,7 @@ optional arguments:
   -in IN          Path to input image
   -scale SCALE    Downsizing scale. e.g. 0.5
   -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam
-  -energy ENERGY  Energy algorithm (s = Sobel, p = Prewitt)
+  -energy ENERGY  Energy algorithm (all = All existing algorithms, s = Sobel, p = Prewitt, l = Laplacian, r = Roberts)
 ```
 
 ## License
