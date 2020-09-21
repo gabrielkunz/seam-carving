@@ -14,66 +14,63 @@ The program was developed and tested on a MacBook Pro 13-inch running macOS 10.1
 
 It is recommended to use the program in a virtual environment. To create a virtual environment, the virtualenv package has to be installed:
 
-```bash
-python3 -m pip install virtualenv
+```console
+foo@bar ~ % python3 -m pip install virtualenv
 ```
 
 After that, navigate to the folder where the 'src' folder for the scripts is located. Then we can create the virtual environment using the following command:
 
-```bash
-python3 -m venv env
+```console
+foo@bar ~ % python3 -m venv env
 ```
 
 You'll notice that the 'env' folder was created in your workspace. Now we need to activate the environment:
 
-```bash
-source env/bin/activate
+```console
+foo@bar ~ % source env/bin/activate
 ```
 
 To install the required packages, use the following command:
 
-```bash
-python3 -m pip install -r requirements.txt
+```console
+foo@bar ~ % python3 -m pip install -r requirements.txt
 ```
 
 To leave the virtual environment, just run the following command:
 
-```bash
-deactivate
+```console
+foo@bar ~ % deactivate
 ```
 
 ## Usage
 
 First, navigate to your workspace folder where the 'src', 'images' folders are located. Then, activate your virtual environment created in the 'Installation' section:
 
-```bash
-source env/bin/activate
+```console
+foo@bar ~ % source env/bin/activate
 ```
 
 Once in the virtual environment, open the 'src' folder:
 
-```bash
-cd src
+```console
+foo@bar ~ % cd src
 ```
 
 Now you can run the program using the following command:
-```bash
-python3 sc.py -in <image filename (in /images/ folder)> -scale <downsizing scale> -seam <seam orientation, v for vertical h for horizontal> -energy <energy algorithm (e.g. s for sobel)>
+```console
+foo@bar src % python3 sc.py -in <image filename (in /images/ folder)> -scale <downsizing scale> -seam <seam orientation, v for vertical h for horizontal> -energy <energy algorithm (e.g. s for sobel)>
 ```
 
 As for example:
 
-```bash
-python3 sc.py -in image.jpg -scale 0.5 -seam h -energy s
+```console
+foo@bar src % python3 sc.py -in image.jpg -scale 0.5 -seam h -energy s
 ```
 
 In case you need help with the parameters, just run the command below:
 
-```bash
-python3 sc.py -h
-```
-
-```bash
+```console
+foo@bar src % python3 sc.py -h
 usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY]
 
 optional arguments:
