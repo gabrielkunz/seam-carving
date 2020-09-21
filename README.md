@@ -1,15 +1,14 @@
 # Seam Carving
 
-Project description
+Content-Aware Scaling using Seam Carving method with different algorithms for energy mapping.
 
 Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 
+Demo:https://www.aryan.app/seam-carving/
 
 ## Context
 
-
 The program was developed and tested on a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS.
-
 
 ## Installation
 
