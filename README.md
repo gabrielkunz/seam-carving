@@ -4,7 +4,7 @@ Content-Aware Scaling using Seam Carving method with different algorithms for en
 
 Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 
-Demo:https://www.aryan.app/seam-carving/
+Demo: https://www.aryan.app/seam-carving/
 
 ## Context
 
