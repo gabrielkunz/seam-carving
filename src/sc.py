@@ -1,14 +1,4 @@
-#PURPOSE:
-#Perform the seam carving resizing using different types of algorithms for the energy map calculation (e.g. Sobel, Prewitt, Laplacian, etc.)
-#
-#USAGE: (terminal)
-#python3 scEnergy.py -in <image filename (in /images/ folder)> -out <output filename> -scale <downsizing scale> -seam <seam orientation, v for vertical h for horizontal>
-#
-#EXAMPLE: (terminal)
-#python3 scEnergy.py -in image.jpg -out result.jpg -scale 0.5 -seam h -energy s
-
 import sys
-import os
 import cv2
 import argparse
 import warnings
@@ -23,11 +13,12 @@ from pathlib import Path as path
 warnings.filterwarnings("ignore", category=Warning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-#defines the new image shape based on scale provided
+
 def resize(img, scale):
-	#m = rows
-	#n = columns
-	m,n, _ = img.shape
+	"""
+	Defines the new image shape based on scale provided
+	"""
+	m,n, _ = img.shape # m = rows, n = columns
 	new_n = int(scale * n)
 
 	for i in trange(n - new_n):
@@ -35,12 +26,13 @@ def resize(img, scale):
 
 	return img 
 
+#Seam carving functions
 @jit
-#remove the seam (carving)
 def seamCarving(img):
-	#m = rows
-	#n = columns
-	m, n, _ = img.shape
+	"""
+	Removes the seam selected (carving process)
+	"""
+	m, n, _ = img.shape # m = rows, n = columns
 
 	M, backtrack = findSeam(img)
 
@@ -64,11 +56,12 @@ def seamCarving(img):
 	return img
 
 @jit
-#finds the minimal energy path (seam)
 def findSeam(img):
-	#m = rows
-	#n = columns
-	m,n, _ = img.shape
+	"""
+	Finds the minimal energy path (seam) to be removed from the image
+	"""
+
+	m,n, _ = img.shape # m = rows, n = columns
 
 	#calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
 	energy_map = calculateEnergy(img)
@@ -100,8 +93,11 @@ def findSeam(img):
 	return M, backtrack
 
 @jit
-#calculates the energy map using Sobel mask to find the seams to be removed
 def calculateEnergy(img):
+	"""
+	Calculates the energy map using edge detection algorithms for backward energy 
+	or the forward energy algorithm
+	"""
 	if ENERGY_ALGORITHM == 's':
 		energy_map = sobel(img)
 	elif ENERGY_ALGORITHM == 'p':
@@ -110,11 +106,14 @@ def calculateEnergy(img):
 		energy_map = laplacian(img)
 	elif ENERGY_ALGORITHM == 'r':
 		energy_map = roberts(img)
+	elif ENERGY_ALGORITHM == 'f':
+		energy_map = forwardEnergy(img)
 	else:
 		energy_map = sobel(img)
 
 	return energy_map
 
+#Energy mapping functions
 def sobel(img):
 	kernelSy = np.array([
 	    [1.0, 2.0, 1.0],
@@ -236,6 +235,50 @@ def roberts(img):
 
 	return energy_map
 
+def forwardEnergy(img):
+	"""
+    Forward energy algorithm as described in "Improved Seam Carving for Video Retargeting"
+    by Rubinstein, Shamir, Avidan.
+
+    Vectorized code adapted from
+    https://github.com/axu2/improved-seam-carving
+    """
+	h, w = img.shape[:2]
+	img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float64)
+
+	energy_map = np.zeros((h,w))
+	m = np.zeros((h,w))
+
+	U = np.roll(img, 1, axis = 0)
+	L = np.roll(img, 1, axis = 1)
+	R = np.roll(img, -1, axis = 1)
+
+	cU = np.abs(R - L)
+	cL = np.abs(U - L) + cU
+	cR = np.abs(U - R) + cU
+
+	for i in range(1, h):
+		mU = m[i-1]
+		mL = np.roll(mU, 1)
+		mR = np.roll(mU, -1)
+
+		mULR = np.array([mU, mL, mR])
+		cULR = np.array([cU[i], cL[i], cR[i]])
+		mULR += cULR
+
+		argmins = np.argmin(mULR, axis = 0)
+		m[i] = np.choose(argmins, mULR)
+		energy_map[i] = np.choose(argmins, cULR)
+
+	#Saves the first energy map calculated (before any seam removed)
+	global firstCalculation
+	if firstCalculation == True:
+		FORWARD_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_forwardEnergy.jpg"
+		cv2.imwrite(FORWARD_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
+		firstCalculation = False
+
+	return energy_map
+
 #Main program
 if __name__ == '__main__':
 	ap = argparse.ArgumentParser()
@@ -255,7 +298,7 @@ if __name__ == '__main__':
 	path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
 	#Number of diferent resize algorithms existing in this program
-	ALGORITHMS = ['s', 'p', 'l', 'r']
+	ALGORITHMS = ['s', 'p', 'l', 'r', 'f']
 
 	#paths definition
 	IMG_PATH = "../images/" + IMG_NAME
