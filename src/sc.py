@@ -10,10 +10,20 @@ from numba import jit
 from scipy.ndimage.filters import convolve
 from pathlib import Path as path
 
+rc = {"figure.constrained_layout.use" : True,
+	  "axes.spines.left" : False,
+      "axes.spines.right" : False,
+      "axes.spines.bottom" : False,
+      "axes.spines.top" : False,
+      "xtick.bottom" : False,
+      "xtick.labelbottom" : False,
+      "ytick.labelleft" : False,
+      "ytick.left" : False}
+plt.rcParams.update(rc)
+
 #This is to ignore NumbaWarnings and NumbaDeprecationWarnings issued by @jit
 warnings.filterwarnings("ignore", category=Warning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 def resize(img, scale):
 	"""
@@ -286,28 +296,22 @@ def plotResult(img, out, energyFunction):
 	Plot the original image with its mean energy, energy map and
 	the resized image with its mean energy.
 	"""
-	wIn = img.shape[1]
-	wOut = out.shape[1]
-	gs = gridspec.GridSpec(3, 2,
-	                   width_ratios=[wIn,wOut],
-	                   height_ratios=[1, 1, 1]
-	                   )
 
-	plt.figure(figsize=(14, 14))
+	fig = plt.figure(figsize=(10, 10))
+	##Fix message blinking when hover
+	fig.canvas.toolbar.set_message = lambda x: ""
 
-	plt.subplot(gs[0])
+	plt.subplot(211)
 	plt.imshow(img)
-	plt.title('Original Image')
-	plt.xlabel('Mean energy = ' + str(np.mean(img)))
+	plt.title('Original Image\n'+'Mean energy = ' + str(np.mean(img)))
 
-	plt.subplot(gs[2])
+	plt.subplot(223)
 	plt.imshow(energyFunction(img))
 	plt.title('Energy Map (' + energyFunction.__name__ + ')')
 
-	plt.subplot(gs[3])
+	plt.subplot(224)
 	plt.imshow(out)
-	plt.title('Carving Result')
-	plt.xlabel('Mean energy = ' + str(np.mean(out)))
+	plt.title('Carving Result\n'+'Mean energy = ' + str(np.mean(out)))
 
 	plt.show()	
 
@@ -342,8 +346,8 @@ if __name__ == '__main__':
 	IMG_PATH = "../images/" + IMG_NAME
 	ENERGY_MAP_PATH = "../results/energy_maps/"
 	EDGE_DETECTION_PATH = "../results/edge_detection_images/"
-	img = cv2.imread(IMG_PATH)
-	imgOriginal = img
+
+	imgOriginal = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
 
 	#Sets the boolean used to save the energy map
 	firstCalculation = True
@@ -351,18 +355,17 @@ if __name__ == '__main__':
 	#Run program for all the energy mapping algorithms implemented
 	if ENERGY_ALGORITHM == "all":
 		for a in ALGORITHMS:
-			img = cv2.imread(IMG_PATH)
 			ENERGY_ALGORITHM = a
 			energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(a)]
 
 			if SEAM_ORIENTATION == 'h':
 				print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
-				img = np.rot90(img, 1, (0, 1))
+				img = np.rot90(imgOriginal, 1, (0, 1))
 				img = resize(img, SCALE)
 				out = np.rot90(img, 3, (0, 1))
 			elif SEAM_ORIENTATION == 'v':
 				print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
-				out = resize(img, SCALE)
+				out = resize(imgOriginal, SCALE)
 			else:
 				print("Error: invalid arguments. Use -h argument for help")
 				sys.exit(1)
@@ -379,15 +382,15 @@ if __name__ == '__main__':
 			firstCalculation = True
 
 	else: #Run program for a specific algorithm
-		img = cv2.imread(IMG_PATH)
+
 		energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(ENERGY_ALGORITHM)]
 
 		if SEAM_ORIENTATION == 'h':
-				img = np.rot90(img, 1, (0, 1))
+				img = np.rot90(imgOriginal, 1, (0, 1))
 				img = resize(img, SCALE)
 				out = np.rot90(img, 3, (0, 1))
 		elif SEAM_ORIENTATION == 'v':
-			out = resize(img, SCALE)
+			out = resize(imgOriginal, SCALE)
 		else:
 			print("Error: invalid arguments. Use -h argument for help")
 			sys.exit(1)
@@ -399,4 +402,4 @@ if __name__ == '__main__':
 
 		#Plot the result if requested by the user
 		if args["plot"]:
-			plotResult(imgOriginal,out)
+			plotResult(imgOriginal, out, energyFunction)
