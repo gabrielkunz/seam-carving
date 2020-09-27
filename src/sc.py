@@ -10,6 +10,17 @@ from numba import jit
 from scipy.ndimage.filters import convolve
 from pathlib import Path as path
 
+rc = {"figure.constrained_layout.use" : True,
+	  "axes.spines.left" : False,
+      "axes.spines.right" : False,
+      "axes.spines.bottom" : False,
+      "axes.spines.top" : False,
+      "xtick.bottom" : False,
+      "xtick.labelbottom" : False,
+      "ytick.labelleft" : False,
+      "ytick.left" : False}
+plt.rcParams.update(rc)
+
 #This is to ignore NumbaWarnings and NumbaDeprecationWarnings issued by @jit
 warnings.filterwarnings("ignore", category=Warning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -285,7 +296,8 @@ def plotResult(img, out, energyFunction):
 	Plot the original image with its mean energy, energy map and
 	the resized image with its mean energy.
 	"""
-	fig = plt.figure(figsize=(14, 14))
+
+	fig = plt.figure(figsize=(10, 10))
 	##Fix message blinking when hover
 	fig.canvas.toolbar.set_message = lambda x: ""
 
@@ -334,6 +346,7 @@ if __name__ == '__main__':
 	IMG_PATH = "../images/" + IMG_NAME
 	ENERGY_MAP_PATH = "../results/energy_maps/"
 	EDGE_DETECTION_PATH = "../results/edge_detection_images/"
+
 	imgOriginal = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
 
 	#Sets the boolean used to save the energy map
