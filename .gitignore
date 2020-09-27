@@ -127,3 +127,4 @@ dmypy.json
 # User ignore
 results/
 .DS_Store
+.vscode/settings.json
