@@ -35,7 +35,7 @@ def resize(img, scale):
 	for i in trange(n - new_n):
 		img = seamCarving(img)
 
-	return img 
+	return img
 
 #Seam carving functions
 @jit
@@ -90,7 +90,7 @@ def findSeam(img):
 			if j == 0:
 				#index contains the minimal between M(i-1,j) and M(i-1,j+2) (pq nao j+1???)
 				index = np.argmin(M[i - 1, j:j + 2]) #trocar por -1 e ver se tem alguma diferenca
-				backtrack[i,j] = index + j 
+				backtrack[i,j] = index + j
 				minimal_energy = M[i - 1, index + j]
 			#if we are in the other columns
 			else:
@@ -106,7 +106,7 @@ def findSeam(img):
 @jit
 def calculateEnergy(img):
 	"""
-	Calculates the energy map using edge detection algorithms for backward energy 
+	Calculates the energy map using edge detection algorithms for backward energy
 	or the forward energy algorithm
 	"""
 	if ENERGY_ALGORITHM == 's':
@@ -313,7 +313,7 @@ def plotResult(img, out, energyFunction):
 	plt.imshow(out)
 	plt.title('Carving Result\n'+'Mean energy = ' + str(np.mean(out)))
 
-	plt.show()	
+	plt.show()
 
 #Main program
 if __name__ == '__main__':
