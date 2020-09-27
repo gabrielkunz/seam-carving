@@ -75,14 +75,16 @@ In case you need help with the parameters, just run the command below:
 
 ```console
 foo@bar src % python3 sc.py -h
-usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY]
+usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY] [-plot]
 
 optional arguments:
   -h, --help      show this help message and exit
   -in IN          Path to input image
   -scale SCALE    Downsizing scale. e.g. 0.5
   -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam
-  -energy ENERGY  Energy algorithm (all = All existing algorithms, s = Sobel, p = Prewitt, l = Laplacian, r = Roberts)
+  -energy ENERGY  Energy mapping algorithm (s = Sobel, p = Prewitt, l =
+                  Laplacian, r = Roberts, f = Forward energy)
+  -plot           Plot result after resizing
 ```
 
 ## License
