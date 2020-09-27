@@ -4,6 +4,8 @@
 
 Content-Aware Scaling using Seam Carving method with different algorithms for energy mapping.
 
+![Demo][/demos/demo1.png]
+
 Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 
 Demo: https://www.aryan.app/seam-carving/
