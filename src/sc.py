@@ -307,7 +307,7 @@ def plotResult(img, out, energyFunction):
 	plt.subplot(gs[3])
 	plt.imshow(out)
 	plt.title('Carving Result')
-	plt.xlabel('Mean energy = ' + str(np.mean(img)))
+	plt.xlabel('Mean energy = ' + str(np.mean(out)))
 
 	plt.show()	
 
