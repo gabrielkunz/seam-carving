@@ -4,6 +4,7 @@ import argparse
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 from tqdm import trange
 from numba import jit
 from scipy.ndimage.filters import convolve
@@ -279,6 +280,37 @@ def forwardEnergy(img):
 
 	return energy_map
 
+#Other functions
+def plotResult(img, out, energyFunction):
+	"""
+	Plot the original image with its mean energy, energy map and
+	the resized image with its mean energy.
+	"""
+	wIn = img.shape[1]
+	wOut = out.shape[1]
+	gs = gridspec.GridSpec(3, 2,
+	                   width_ratios=[wIn,wOut],
+	                   height_ratios=[1, 1, 1]
+	                   )
+
+	plt.figure(figsize=(14, 14))
+
+	plt.subplot(gs[0])
+	plt.imshow(img)
+	plt.title('Original Image')
+	plt.xlabel('Mean energy = ' + str(np.mean(img)))
+
+	plt.subplot(gs[2])
+	plt.imshow(energyFunction(img))
+	plt.title('Energy Map (' + energyFunction.__name__ + ')')
+
+	plt.subplot(gs[3])
+	plt.imshow(out)
+	plt.title('Carving Result')
+	plt.xlabel('Mean energy = ' + str(np.mean(img)))
+
+	plt.show()	
+
 #Main program
 if __name__ == '__main__':
 	ap = argparse.ArgumentParser()
@@ -287,6 +319,7 @@ if __name__ == '__main__':
 	ap.add_argument("-scale", help="Downsizing scale. e.g. 0.5", required=True, type=float, default=0.5)
 	ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam", required=True)
 	ap.add_argument("-energy", help="Energy algorithm (s = Sobel, p = Prewitt)", required=False, default='s')
+	ap.add_argument("-plot", help="Plot result using matplotlib", action='store_true')
 	args = vars(ap.parse_args())
 
 	IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["scale"], args["seam"], args["energy"]
@@ -299,43 +332,56 @@ if __name__ == '__main__':
 
 	#Number of diferent resize algorithms existing in this program
 	ALGORITHMS = ['s', 'p', 'l', 'r', 'f']
+	ENERGY_MAPPING_FUNCTIONS = [sobel,
+								prewitt,
+								laplacian,
+								roberts,
+								forwardEnergy]
 
 	#paths definition
 	IMG_PATH = "../images/" + IMG_NAME
 	ENERGY_MAP_PATH = "../results/energy_maps/"
 	EDGE_DETECTION_PATH = "../results/edge_detection_images/"
 	img = cv2.imread(IMG_PATH)
+	imgOriginal = img
 
 	#Sets the boolean used to save the energy map
 	firstCalculation = True
 
-	#Run program for all algorithms implemented at the momvent
+	#Run program for all the energy mapping algorithms implemented
 	if ENERGY_ALGORITHM == "all":
 		for a in ALGORITHMS:
 			img = cv2.imread(IMG_PATH)
 			ENERGY_ALGORITHM = a
+			energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(a)]
+
 			if SEAM_ORIENTATION == 'h':
-				print("Performing seam carving with energy algorithm " + ENERGY_ALGORITHM + "...")
+				print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
 				img = np.rot90(img, 1, (0, 1))
 				img = resize(img, SCALE)
 				out = np.rot90(img, 3, (0, 1))
 			elif SEAM_ORIENTATION == 'v':
-				print("Performing seam carving with energy algorithm " + ENERGY_ALGORITHM + "...")
+				print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
 				out = resize(img, SCALE)
 			else:
 				print("Error: invalid arguments. Use -h argument for help")
 				sys.exit(1)
 
-			#Saves results
 			OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
 			cv2.imwrite(OUTPUT_PATH, out)
-			print("Seam carving with energy algorithm " + ENERGY_ALGORITHM + " completed")
+			print("Seam carving with energy energy mapping function " + energyFunction.__name__ + "() completed.")
+
+			#Plot the result if requested by the user
+			if args["plot"]:
+				plotResult(imgOriginal, out, energyFunction)
 
 			#Resets the boolean to save the energy map for the other algorithms
 			firstCalculation = True
 
 	else: #Run program for a specific algorithm
 		img = cv2.imread(IMG_PATH)
+		energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(ENERGY_ALGORITHM)]
+
 		if SEAM_ORIENTATION == 'h':
 				img = np.rot90(img, 1, (0, 1))
 				img = resize(img, SCALE)
@@ -348,3 +394,9 @@ if __name__ == '__main__':
 
 		OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
 		cv2.imwrite(OUTPUT_PATH, out)
+		outMeanEnergy = np.mean(out)
+		print("Seam carving with energy mapping function " + energyFunction.__name__ + " completed.")
+
+		#Plot the result if requested by the user
+		if args["plot"]:
+			plotResult(imgOriginal,out)
