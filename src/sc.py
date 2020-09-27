@@ -1,3 +1,5 @@
+# pylint: disable=E1101
+
 import sys
 import argparse
 import warnings
@@ -369,14 +371,16 @@ if __name__ == '__main__':
                 print("Error: invalid arguments. Use -h argument for help")
                 sys.exit(1)
 
-            OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
-            cv2.imwrite(OUTPUT_PATH, out)
-            print("Seam carving with energy energy mapping function "
-                    + energyFunction.__name__ + "() completed.")
-
             #Plot the result if requested by the user
             if args["plot"]:
                 plotResult(imgOriginal, out, energyFunction)
+
+            print("Seam carving with energy energy mapping function "
+                    + energyFunction.__name__ + "() completed.")
+
+            OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+            out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
+            cv2.imwrite(OUTPUT_PATH, out)
 
             #Resets the boolean to save the energy map for the other algorithms
             firstCalculation = True
@@ -394,13 +398,13 @@ if __name__ == '__main__':
         else:
             print("Error: invalid arguments. Use -h argument for help")
             sys.exit(1)
-
-        OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
-        cv2.imwrite(OUTPUT_PATH, out)
-        outMeanEnergy = np.mean(out)
-        print("Seam carving with energy mapping function "
-                + energyFunction.__name__ + " completed.")
-
         #Plot the result if requested by the user
         if args["plot"]:
             plotResult(imgOriginal, out, energyFunction)
+
+        print("Seam carving with energy mapping function "
+                + energyFunction.__name__ + " completed.")
+
+        OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+        out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
+        cv2.imwrite(OUTPUT_PATH, out)
