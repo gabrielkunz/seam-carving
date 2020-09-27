@@ -318,8 +318,8 @@ if __name__ == '__main__':
 	ap.add_argument("-in", help="Path to input image", required=True)
 	ap.add_argument("-scale", help="Downsizing scale. e.g. 0.5", required=True, type=float, default=0.5)
 	ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam", required=True)
-	ap.add_argument("-energy", help="Energy algorithm (s = Sobel, p = Prewitt)", required=False, default='s')
-	ap.add_argument("-plot", help="Plot result using matplotlib", action='store_true')
+	ap.add_argument("-energy", help="Energy mapping algorithm (s = Sobel, p = Prewitt, l = Laplacian, r = Roberts, f = Forward energy)", required=False, default='s')
+	ap.add_argument("-plot", help="Plot result after resizing", action='store_true')
 	args = vars(ap.parse_args())
 
 	IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["scale"], args["seam"], args["energy"]
