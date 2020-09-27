@@ -94,8 +94,8 @@ def findSeam(img):
                 minimal_energy = M[i - 1, index + j]
             #if we are in the other columns
             else:
-                #index contains the minimal between M(i-1,j-1), M(i-1,j) and M(i-1,j+2) (de novo, pq nao j+1???)
-                index = np.argmin(M[i - 1, j - 1:j + 2]) #trocar por -1 também e ver se tem alguma diferenca
+                #index contains the minimal between M(i-1,j-1), M(i-1,j) and M(i-1,j+2)
+                index = np.argmin(M[i - 1, j - 1:j + 2]) #trocar por -1 também e ver
                 backtrack[i,j] = index + j - 1
                 minimal_energy = M[i-1, index+j-1]
 
@@ -320,8 +320,10 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
 
     ap.add_argument("-in", help="Path to input image", required=True)
-    ap.add_argument("-scale", help="Downsizing scale. e.g. 0.5", required=True, type=float, default=0.5)
-    ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam", required=True)
+    ap.add_argument("-scale", help="Downsizing scale. e.g. 0.5", required=True, type=float,
+                    default=0.5)
+    ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam",
+                    required=True)
     ap.add_argument("-energy", help="Energy mapping algorithm (s = Sobel, p = Prewitt, l = Laplacian, r = Roberts, f = Forward energy)", required=False, default='s')
     ap.add_argument("-plot", help="Plot result after resizing", action='store_true')
     args = vars(ap.parse_args())
@@ -359,12 +361,14 @@ if __name__ == '__main__':
             energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(a)]
 
             if SEAM_ORIENTATION == 'h':
-                print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
+                print("Performing seam carving with energy mapping function "
+                        + energyFunction.__name__ + "()...")
                 img = np.rot90(imgOriginal, 1, (0, 1))
                 img = resize(img, SCALE)
                 out = np.rot90(img, 3, (0, 1))
             elif SEAM_ORIENTATION == 'v':
-                print("Performing seam carving with energy mapping function " + energyFunction.__name__ + "()...")
+                print("Performing seam carving with energy mapping function "
+                        + energyFunction.__name__ + "()...")
                 out = resize(imgOriginal, SCALE)
             else:
                 print("Error: invalid arguments. Use -h argument for help")
@@ -372,7 +376,8 @@ if __name__ == '__main__':
 
             OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
             cv2.imwrite(OUTPUT_PATH, out)
-            print("Seam carving with energy energy mapping function " + energyFunction.__name__ + "() completed.")
+            print("Seam carving with energy energy mapping function "
+                    + energyFunction.__name__ + "() completed.")
 
             #Plot the result if requested by the user
             if args["plot"]:
@@ -386,9 +391,9 @@ if __name__ == '__main__':
         energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(ENERGY_ALGORITHM)]
 
         if SEAM_ORIENTATION == 'h':
-                img = np.rot90(imgOriginal, 1, (0, 1))
-                img = resize(img, SCALE)
-                out = np.rot90(img, 3, (0, 1))
+            img = np.rot90(imgOriginal, 1, (0, 1))
+            img = resize(img, SCALE)
+            out = np.rot90(img, 3, (0, 1))
         elif SEAM_ORIENTATION == 'v':
             out = resize(imgOriginal, SCALE)
         else:
@@ -398,7 +403,8 @@ if __name__ == '__main__':
         OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
         cv2.imwrite(OUTPUT_PATH, out)
         outMeanEnergy = np.mean(out)
-        print("Seam carving with energy mapping function " + energyFunction.__name__ + " completed.")
+        print("Seam carving with energy mapping function "
+                + energyFunction.__name__ + " completed.")
 
         #Plot the result if requested by the user
         if args["plot"]:
