@@ -1,14 +1,13 @@
 import sys
-import cv2
 import argparse
 import warnings
+from pathlib import Path as path
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 from tqdm import trange
 from numba import jit
 from scipy.ndimage.filters import convolve
-from pathlib import Path as path
 
 rc = {"figure.constrained_layout.use" : True,
       "axes.spines.left" : False,
@@ -153,10 +152,7 @@ def sobel(img):
     #Saves the first energy map calculated (before any seam removed)
     global firstCalculation
     if firstCalculation == True:
-        SOBEL_EDGE_PATH = EDGE_DETECTION_PATH + "sobel.jpg"
         cv2.imwrite(SOBEL_EDGE_PATH, np.rot90(sobel, 3, (0, 1)))
-
-        SOBEL_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_sobel.jpg"
         cv2.imwrite(SOBEL_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
         firstCalculation = False
 
@@ -185,10 +181,7 @@ def prewitt(img):
     #Saves the first energy map calculated (before any seam removed)
     global firstCalculation
     if firstCalculation == True:
-        PREWITT_EDGE_PATH = EDGE_DETECTION_PATH + "prewitt.jpg"
         cv2.imwrite(PREWITT_EDGE_PATH, np.rot90(prewitt, 3, (0, 1)))
-
-        PREWITT_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_prewitt.jpg"
         cv2.imwrite(PREWITT_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
         firstCalculation = False
 
@@ -208,10 +201,7 @@ def laplacian(img):
 
     global firstCalculation
     if firstCalculation == True:
-        LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
         cv2.imwrite(LAPLACIAN_EDGE_PATH, np.rot90(laplacian, 3, (0, 1)))
-
-        LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_laplacian.jpg"
         cv2.imwrite(LAPLACIAN_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
         firstCalculation = False
     return energy_map
@@ -237,10 +227,7 @@ def roberts(img):
     #Saves the first energy map calculated (before any seam removed)
     global firstCalculation
     if firstCalculation == True:
-        ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
         cv2.imwrite(ROBERTS_EDGE_PATH, np.rot90(roberts, 3, (0, 1)))
-
-        ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_roberts.jpg"
         cv2.imwrite(ROBERTS_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
         firstCalculation = False
 
@@ -284,7 +271,6 @@ def forwardEnergy(img):
     #Saves the first energy map calculated (before any seam removed)
     global firstCalculation
     if firstCalculation == True:
-        FORWARD_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_forwardEnergy.jpg"
         cv2.imwrite(FORWARD_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
         firstCalculation = False
 
@@ -348,6 +334,15 @@ if __name__ == '__main__':
     IMG_PATH = "../images/" + IMG_NAME
     ENERGY_MAP_PATH = "../results/energy_maps/"
     EDGE_DETECTION_PATH = "../results/edge_detection_images/"
+    SOBEL_EDGE_PATH = EDGE_DETECTION_PATH + "sobel.jpg"
+    SOBEL_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_sobel.jpg"
+    PREWITT_EDGE_PATH = EDGE_DETECTION_PATH + "prewitt.jpg"
+    PREWITT_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_prewitt.jpg"
+    LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
+    LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_laplacian.jpg"
+    ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
+    ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_roberts.jpg"
+    FORWARD_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_forwardEnergy.jpg"
 
     imgOriginal = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
 
