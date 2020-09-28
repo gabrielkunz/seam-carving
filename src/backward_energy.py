@@ -3,16 +3,17 @@
 import numpy as np
 from scipy.ndimage.filters import convolve
 
-class BackwardEnergy(object):
+class BackwardEnergy:
     """
     Backaward Energy mapping with different edge detection algorithms
     """
 
-    def __init__(self, arg):
+    def __init__(self, img):
         super(, self).__init__()
-        self.arg = arg
+        self.img = img
+        self.energy_map = []
 
-    def sobel(img):
+    def sobel(self, img):
         kernelSy = np.array([
             [1.0, 2.0, 1.0],
             [0.0, 0.0, 0.0],
@@ -39,7 +40,7 @@ class BackwardEnergy(object):
 
         return energy_map
 
-    def prewitt(img):
+    def prewitt(self, img):
         kernelPx = np.array([
             [1.0, 0.0, -1.0],
             [1.0, 0.0, -1.0],
@@ -61,7 +62,7 @@ class BackwardEnergy(object):
 
         return energy_map
 
-    def laplacian(img):
+    def laplacian(self, img):
         kernelL = np.array([
             [0.0, 1.0, 0.0],
             [1.0, -4.0, 1.0],
@@ -75,7 +76,7 @@ class BackwardEnergy(object):
 
         return energy_map
 
-    def roberts(img):
+    def roberts(self, img):
         kernelR1 = np.array([
             [1.0, 0.0],
             [0.0, -1.0],

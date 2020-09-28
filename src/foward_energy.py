@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 
-class ForwardEnergy(object):
+class ForwardEnergy:
     """
     Forward energy algorithm as described in "Improved Seam Carving for Video Retargeting"
     by Rubinstein, Shamir, Avidan.
@@ -12,9 +12,9 @@ class ForwardEnergy(object):
     https://github.com/axu2/improved-seam-carving
     """
 
-    def __init__(self, arg):
+    def __init__(self, img):
         super(, self).__init__()
-        self.arg = arg
+        self.img = img
 
         h, w = img.shape[:2]
         img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float64)
