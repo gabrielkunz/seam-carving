@@ -7,10 +7,7 @@ class BackwardEnergy:
     """
     Backaward Energy mapping with different edge detection algorithms
     """
-
-    def __init__(self, img):
-        super(, self).__init__()
-        self.img = img
+    def __init__(self):
         self.energy_map = []
 
     def sobel(self, img):

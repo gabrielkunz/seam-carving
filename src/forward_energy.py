@@ -12,10 +12,10 @@ class ForwardEnergy:
     https://github.com/axu2/improved-seam-carving
     """
 
-    def __init__(self, img):
-        super(, self).__init__()
-        self.img = img
+    def __init__(self):
+        pass
 
+    def fast_forward_energy(self,img):
         h, w = img.shape[:2]
         img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float64)
 
@@ -42,11 +42,5 @@ class ForwardEnergy:
             argmins = np.argmin(mULR, axis = 0)
             m[i] = np.choose(argmins, mULR)
             energy_map[i] = np.choose(argmins, cULR)
-
-        #Saves the first energy map calculated (before any seam removed)
-        global firstCalculation
-        if firstCalculation == True:
-            cv2.imwrite(FORWARD_ENERGY_PATH, np.rot90(energy_map, 3, (0, 1)))
-            firstCalculation = False
 
         return energy_map

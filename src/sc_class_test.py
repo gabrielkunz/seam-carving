@@ -11,8 +11,8 @@ from tqdm import trange
 from numba import jit
 from scipy.ndimage.filters import convolve
 
-import backward_energy as be
-import forward_energy as fe
+from backward_energy import BackwardEnergy
+from forward_energy import ForwardEnergy
 
 rc = {"figure.constrained_layout.use" : True,
       "axes.spines.left" : False,
@@ -107,12 +107,12 @@ def findSeam(img):
 
     return M, backtrack
 
-@jit
 def calculateEnergy(img):
     """
     Calculates the energy map using edge detection algorithms for backward energy
     or the forward energy algorithm
     """
+
     if ENERGY_ALGORITHM == 's':
         energy_map = be.sobel(img)
     elif ENERGY_ALGORITHM == 'p':
@@ -122,7 +122,7 @@ def calculateEnergy(img):
     elif ENERGY_ALGORITHM == 'r':
         energy_map = be.roberts(img)
     elif ENERGY_ALGORITHM == 'f':
-        energy_map = fe.forwardEnergy(img)
+        energy_map = fe.fast_forward_energy(img)
     else:
         energy_map = be.sobel(img)
 
@@ -145,7 +145,7 @@ def plotResult(img, out, energyFunction):
 
     plt.subplot(223)
     plt.imshow(energyFunction(img))
-    plt.title('Energy Map (' + energyFunction.__name__ + ')')
+    #plt.title('Energy Map (' + energyFunction.__name__ + ')')
 
     plt.subplot(224)
     plt.imshow(out)
@@ -174,13 +174,17 @@ if __name__ == '__main__':
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
+    #
+    be = BackwardEnergy()
+    fe = ForwardEnergy()
+
     #Number of diferent resize algorithms existing in this program
     ALGORITHMS = ['s', 'p', 'l', 'r', 'f']
     ENERGY_MAPPING_FUNCTIONS = [be.sobel,
                                 be.prewitt,
                                 be.laplacian,
                                 be.roberts,
-                                fe.forwardEnergy]
+                                fe.fast_forward_energy]
 
     #paths definition
     IMG_PATH = "../images/" + IMG_NAME
