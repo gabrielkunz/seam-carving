@@ -1,3 +1,5 @@
+# pylint: disable=E1101
+
 import cv2
 import numpy as np
 
@@ -13,7 +15,7 @@ class ForwardEnergy(object):
     def __init__(self, arg):
         super(, self).__init__()
         self.arg = arg
-    
+
         h, w = img.shape[:2]
         img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float64)
 
