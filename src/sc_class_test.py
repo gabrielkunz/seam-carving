@@ -1,6 +1,7 @@
 # pylint: disable=E1101
 
 import sys
+import os
 import argparse
 import warnings
 from pathlib import Path as path
@@ -144,7 +145,7 @@ def plotResult(img, out, energyFunction):
 
     plt.subplot(223)
     plt.imshow(energyFunction(img))
-    #plt.title('Energy Map (' + energyFunction.__name__ + ')')
+    plt.title('Energy Map (' + energyFunction.__name__ + ')')
 
     plt.subplot(224)
     plt.imshow(out)
@@ -173,33 +174,22 @@ if __name__ == '__main__':
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
-    # Instantiate the energy mapping classes
-    be = BackwardEnergy()
-    fe = ForwardEnergy()
+    #paths definition
+    IMG_PATH = "../images/" + IMG_NAME
 
-    #Number of diferent resize algorithms existing in this program
+    input_image = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
+
+    # Instantiate the energy mapping classes
+    be = BackwardEnergy(input_image, SEAM_ORIENTATION)
+    fe = ForwardEnergy(input_image, SEAM_ORIENTATION)
+
+    # Number of diferent resize algorithms existing in this program
     ALGORITHMS = ['s', 'p', 'l', 'r', 'f']
     ENERGY_MAPPING_FUNCTIONS = [be.sobel,
                                 be.prewitt,
                                 be.laplacian,
                                 be.roberts,
                                 fe.fast_forward_energy]
-
-    #paths definition
-    IMG_PATH = "../images/" + IMG_NAME
-    ENERGY_MAP_PATH = "../results/energy_maps/"
-    EDGE_DETECTION_PATH = "../results/edge_detection_images/"
-    SOBEL_EDGE_PATH = EDGE_DETECTION_PATH + "sobel.jpg"
-    SOBEL_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_sobel.jpg"
-    PREWITT_EDGE_PATH = EDGE_DETECTION_PATH + "prewitt.jpg"
-    PREWITT_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_prewitt.jpg"
-    LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
-    LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_laplacian.jpg"
-    ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
-    ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_roberts.jpg"
-    FORWARD_ENERGY_PATH = ENERGY_MAP_PATH + "energy_map_forwardEnergy.jpg"
-
-    imgOriginal = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
 
     #Run program for all the energy mapping algorithms implemented
     if ENERGY_ALGORITHM == "all":
@@ -211,26 +201,26 @@ if __name__ == '__main__':
                 print("Performing seam carving with energy mapping function "
                         + energyFunction.__name__ + "()...")
 
-                img = np.rot90(imgOriginal, 1, (0, 1))
+                img = np.rot90(input_image, 1, (0, 1))
                 img = resize(img, SCALE)
                 out = np.rot90(img, 3, (0, 1))
             elif SEAM_ORIENTATION == 'v':
                 print("Performing seam carving with energy mapping function "
                         + energyFunction.__name__ + "()...")
 
-                out = resize(imgOriginal, SCALE)
+                out = resize(input_image, SCALE)
             else:
                 print("Error: invalid arguments. Use -h argument for help")
                 sys.exit(1)
 
             #Plot the result if requested by the user
             if args["plot"]:
-                plotResult(imgOriginal, out, energyFunction)
+                plotResult(input_image, out, energyFunction)
 
             print("Seam carving with energy energy mapping function "
                     + energyFunction.__name__ + "() completed.")
 
-            OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+            OUTPUT_PATH = "../results/resized_images/" + (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
             out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
             cv2.imwrite(OUTPUT_PATH, out)
 
@@ -239,21 +229,21 @@ if __name__ == '__main__':
         energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(ENERGY_ALGORITHM)]
 
         if SEAM_ORIENTATION == 'h':
-            img = np.rot90(imgOriginal, 1, (0, 1))
+            img = np.rot90(input_image, 1, (0, 1))
             img = resize(img, SCALE)
             out = np.rot90(img, 3, (0, 1))
         elif SEAM_ORIENTATION == 'v':
-            out = resize(imgOriginal, SCALE)
+            out = resize(input_image, SCALE)
         else:
             print("Error: invalid arguments. Use -h argument for help")
             sys.exit(1)
         #Plot the result if requested by the user
         if args["plot"]:
-            plotResult(imgOriginal, out, energyFunction)
+            plotResult(input_image, out, energyFunction)
 
         print("Seam carving with energy mapping function "
                 + energyFunction.__name__ + " completed.")
 
-        OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
+        OUTPUT_PATH = "../results/resized_images/" + (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
         out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
         cv2.imwrite(OUTPUT_PATH, out)

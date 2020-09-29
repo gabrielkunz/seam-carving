@@ -3,6 +3,10 @@
 import cv2
 import numpy as np
 
+#Path definition
+ENERGY_MAP_PATH = "../results/energy_maps/"
+FORWARD_ENERGY_PATH = ENERGY_MAP_PATH + "em_forwardEnergy.jpg"
+
 class ForwardEnergy:
     """
     Forward energy algorithm as described in "Improved Seam Carving for Video Retargeting"
@@ -11,9 +15,13 @@ class ForwardEnergy:
     Vectorized code adapted from
     https://github.com/axu2/improved-seam-carving
     """
-
-    def __init__(self):
-        pass
+    def __init__(self, input_image, seam_orientation):
+        self.input_image = input_image
+        self.energy_map = []
+        if seam_orientation == 'h':
+            self.input_image = np.rot90(input_image, 1, (0, 1))
+        else:
+            self.input_image = input_image
 
     def fast_forward_energy(self,img):
         h, w = img.shape[:2]
@@ -43,4 +51,11 @@ class ForwardEnergy:
             m[i] = np.choose(argmins, mULR)
             energy_map[i] = np.choose(argmins, cULR)
 
-        return energy_map
+        self.energy_map = energy_map
+
+        # If the image being handled has the same number of columns as
+        # the input image, then this is the first iteration
+        if img.shape[1] == self.input_image.shape[1]:
+            cv2.imwrite(FORWARD_ENERGY_PATH, np.rot90(self.energy_map, 3, (0, 1)))
+
+        return self.energy_map
