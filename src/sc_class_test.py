@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import trange
 from numba import jit
-from scipy.ndimage.filters import convolve
 
 from backward_energy import BackwardEnergy
 from forward_energy import ForwardEnergy
@@ -33,10 +32,10 @@ def resize(img, scale):
     """
     Defines the new image shape based on scale provided
     """
-    m,n, _ = img.shape # m = rows, n = columns
-    new_n = int(scale * n)
+    _, columns, _ = img.shape
+    new_columns = int(scale * columns)
 
-    for i in trange(n - new_n):
+    for i in trange(columns - new_columns):
         img = seamCarving(img)
 
     return img
@@ -47,17 +46,17 @@ def seamCarving(img):
     """
     Removes the seam selected (carving process)
     """
-    m, n, _ = img.shape # m = rows, n = columns
+    rows, columns, _ = img.shape
 
     M, backtrack = findSeam(img)
 
     #creates a mask with value True in all positions
-    mask = np.ones((m,n), dtype=np.bool)
+    mask = np.ones((rows,columns), dtype=np.bool)
 
     #finds the position of the smalletst element in the last row of M
     j = np.argmin(M[-1])
     #from bottom-up
-    for i in reversed(range(m)):
+    for i in reversed(range(rows)):
         #marks the pixel for deletion
         mask[i,j] = False
         #gets the column position from the backtrack matrix
@@ -67,7 +66,7 @@ def seamCarving(img):
     mask = np.stack([mask] * 3, axis=2)
 
     #deletes the flagged pixels and resize the image to the new dimension
-    img = img[mask].reshape((m, n - 1, 3))
+    img = img[mask].reshape((rows, columns - 1, 3))
     return img
 
 @jit
@@ -76,7 +75,7 @@ def findSeam(img):
     Finds the minimal energy path (seam) to be removed from the image
     """
 
-    m,n, _ = img.shape # m = rows, n = columns
+    rows, columns, _ = img.shape # m = rows, n = columns
 
     #calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
     energy_map = calculateEnergy(img)
@@ -88,8 +87,8 @@ def findSeam(img):
     #backtrack is a matrix of zeroes with the same dimensions as the image/energy map/M
     backtrack = np.zeros_like(M, dtype=np.int)
 
-    for i in range(1,m):
-        for j in range(0,n):
+    for i in range(1,rows):
+        for j in range(0,columns):
             #if we are in the first column (the one more to the left)
             if j == 0:
                 #index contains the minimal between M(i-1,j) and M(i-1,j+2) (pq nao j+1???)
@@ -174,7 +173,7 @@ if __name__ == '__main__':
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
-    #
+    # Instantiate the energy mapping classes
     be = BackwardEnergy()
     fe = ForwardEnergy()
 
@@ -202,9 +201,6 @@ if __name__ == '__main__':
 
     imgOriginal = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
 
-    #Sets the boolean used to save the energy map
-    firstCalculation = True
-
     #Run program for all the energy mapping algorithms implemented
     if ENERGY_ALGORITHM == "all":
         for a in ALGORITHMS:
@@ -214,12 +210,14 @@ if __name__ == '__main__':
             if SEAM_ORIENTATION == 'h':
                 print("Performing seam carving with energy mapping function "
                         + energyFunction.__name__ + "()...")
+
                 img = np.rot90(imgOriginal, 1, (0, 1))
                 img = resize(img, SCALE)
                 out = np.rot90(img, 3, (0, 1))
             elif SEAM_ORIENTATION == 'v':
                 print("Performing seam carving with energy mapping function "
                         + energyFunction.__name__ + "()...")
+
                 out = resize(imgOriginal, SCALE)
             else:
                 print("Error: invalid arguments. Use -h argument for help")
@@ -235,9 +233,6 @@ if __name__ == '__main__':
             OUTPUT_PATH = "../results/resized_images/" + ENERGY_ALGORITHM + ".jpg"
             out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
             cv2.imwrite(OUTPUT_PATH, out)
-
-            #Resets the boolean to save the energy map for the other algorithms
-            firstCalculation = True
 
     else: #Run program for a specific algorithm
 
