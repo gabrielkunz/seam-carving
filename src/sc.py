@@ -123,6 +123,8 @@ def calculateEnergy(img):
         energy_map = be.roberts(img)
     elif ENERGY_ALGORITHM == 'f':
         energy_map = fe.fast_forward_energy(img)
+    elif ENERGY_ALGORITHM == 'c':
+        energy_map = be.canny(img)
     else:
         energy_map = be.sobel(img)
 
@@ -184,11 +186,12 @@ if __name__ == '__main__':
     fe = ForwardEnergy(input_image, SEAM_ORIENTATION)
 
     # Number of diferent resize algorithms existing in this program
-    ALGORITHMS = ['s', 'p', 'l', 'r', 'f']
+    ALGORITHMS = ['s', 'p', 'l', 'r', 'c', 'f']
     ENERGY_MAPPING_FUNCTIONS = [be.sobel,
                                 be.prewitt,
                                 be.laplacian,
                                 be.roberts,
+                                be.canny,
                                 fe.fast_forward_energy]
 
     #Run program for all the energy mapping algorithms implemented
