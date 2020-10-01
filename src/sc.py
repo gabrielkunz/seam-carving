@@ -84,14 +84,13 @@ def findSeam(img):
 
     # calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
     energy_map = calculateEnergy(img)
-
+    print(len(energy_map))
+    exit()
     # the energy map is copied into M
     M = energy_map.copy()
-
     # creates the backtrack to find the list of pixels present in the found seam
     # backtrack is a matrix of zeroes with the same dimensions as the image/energy map/M
     backtrack = np.zeros_like(M, dtype=np.int)
-
     for i in range(1, rows):
         for j in range(0, columns):
             # if we are in the first column (the one more to the left)
@@ -256,6 +255,7 @@ if __name__ == '__main__':
         else:
             print("Error: invalid arguments. Use -h argument for help")
             sys.exit(1)
+
         # Plot the result if requested by the user
         if args["plot"]:
             plotResult(input_image, out, energyFunction)
@@ -265,5 +265,6 @@ if __name__ == '__main__':
 
         OUTPUT_PATH = "../results/resized_images/" + \
             (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
+        
         out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
         cv2.imwrite(OUTPUT_PATH, out)
