@@ -14,20 +14,21 @@ from numba import jit
 from backward_energy import BackwardEnergy
 from forward_energy import ForwardEnergy
 
-rc = {"figure.constrained_layout.use" : True,
-      "axes.spines.left" : False,
-      "axes.spines.right" : False,
-      "axes.spines.bottom" : False,
-      "axes.spines.top" : False,
-      "xtick.bottom" : False,
-      "xtick.labelbottom" : False,
-      "ytick.labelleft" : False,
-      "ytick.left" : False}
+rc = {"figure.constrained_layout.use": True,
+      "axes.spines.left": False,
+      "axes.spines.right": False,
+      "axes.spines.bottom": False,
+      "axes.spines.top": False,
+      "xtick.bottom": False,
+      "xtick.labelbottom": False,
+      "ytick.labelleft": False,
+      "ytick.left": False}
 plt.rcParams.update(rc)
 
-#This is to ignore NumbaWarnings and NumbaDeprecationWarnings issued by @jit
+# This is to ignore NumbaWarnings and NumbaDeprecationWarnings issued by @jit
 warnings.filterwarnings("ignore", category=Warning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 def resize(img, scale):
     """
@@ -41,7 +42,9 @@ def resize(img, scale):
 
     return img
 
-#Seam carving functions
+# Seam carving functions
+
+
 @jit
 def seamCarving(img):
     """
@@ -51,24 +54,25 @@ def seamCarving(img):
 
     M, backtrack = findSeam(img)
 
-    #creates a mask with value True in all positions
-    mask = np.ones((rows,columns), dtype=np.bool)
+    # creates a mask with value True in all positions
+    mask = np.ones((rows, columns), dtype=np.bool)
 
-    #finds the position of the smalletst element in the last row of M
+    # finds the position of the smalletst element in the last row of M
     j = np.argmin(M[-1])
-    #from bottom-up
+    # from bottom-up
     for i in reversed(range(rows)):
-        #marks the pixel for deletion
-        mask[i,j] = False
-        #gets the column position from the backtrack matrix
-        j = backtrack[i,j]
+        # marks the pixel for deletion
+        mask[i, j] = False
+        # gets the column position from the backtrack matrix
+        j = backtrack[i, j]
 
-    #converts the mask to 3D since the image has 3 channels
+    # converts the mask to 3D since the image has 3 channels
     mask = np.stack([mask] * 3, axis=2)
 
-    #deletes the flagged pixels and resize the image to the new dimension
+    # deletes the flagged pixels and resize the image to the new dimension
     img = img[mask].reshape((rows, columns - 1, 3))
     return img
+
 
 @jit
 def findSeam(img):
@@ -76,36 +80,37 @@ def findSeam(img):
     Finds the minimal energy path (seam) to be removed from the image
     """
 
-    rows, columns, _ = img.shape # m = rows, n = columns
+    rows, columns, _ = img.shape  # m = rows, n = columns
 
-    #calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
+    # calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
     energy_map = calculateEnergy(img)
 
-    #the energy map is copied into M
+    # the energy map is copied into M
     M = energy_map.copy()
-
-    #creates the backtrack to find the list of pixels present in the found seam
-    #backtrack is a matrix of zeroes with the same dimensions as the image/energy map/M
+    # creates the backtrack to find the list of pixels present in the found seam
+    # backtrack is a matrix of zeroes with the same dimensions as the image/energy map/M
     backtrack = np.zeros_like(M, dtype=np.int)
-
-    for i in range(1,rows):
-        for j in range(0,columns):
-            #if we are in the first column (the one more to the left)
+    for i in range(1, rows):
+        for j in range(0, columns):
+            # if we are in the first column (the one more to the left)
             if j == 0:
-                #index contains the minimal between M(i-1,j) and M(i-1,j+2) (pq nao j+1???)
-                index = np.argmin(M[i - 1, j:j + 2]) #trocar por -1 e ver se tem alguma diferenca
-                backtrack[i,j] = index + j
+                # index contains the minimal between M(i-1,j) and M(i-1,j+2) (pq nao j+1???)
+                # trocar por -1 e ver se tem alguma diferenca
+                index = np.argmin(M[i - 1, j:j + 2])
+                backtrack[i, j] = index + j
                 minimal_energy = M[i - 1, index + j]
-            #if we are in the other columns
+            # if we are in the other columns
             else:
-                #index contains the minimal between M(i-1,j-1), M(i-1,j) and M(i-1,j+2)
-                index = np.argmin(M[i - 1, j - 1:j + 2]) #trocar por -1 também e ver
-                backtrack[i,j] = index + j - 1
+                # index contains the minimal between M(i-1,j-1), M(i-1,j) and M(i-1,j+2)
+                # trocar por -1 também e ver
+                index = np.argmin(M[i - 1, j - 1:j + 2])
+                backtrack[i, j] = index + j - 1
                 minimal_energy = M[i-1, index+j-1]
 
-            M[i,j] += minimal_energy
+            M[i, j] += minimal_energy
 
     return M, backtrack
+
 
 def calculateEnergy(img):
     """
@@ -130,7 +135,9 @@ def calculateEnergy(img):
 
     return energy_map
 
-#Other functions
+# Other functions
+
+
 def plotResult(img, out, energyFunction):
     """
     Plot the original image with its mean energy, energy map and
@@ -138,7 +145,7 @@ def plotResult(img, out, energyFunction):
     """
 
     fig = plt.figure(figsize=(10, 10))
-    ##Fix message blinking when hover
+    # Fix message blinking when hover
     fig.canvas.toolbar.set_message = lambda x: ""
 
     plt.subplot(211)
@@ -155,7 +162,8 @@ def plotResult(img, out, energyFunction):
 
     plt.show()
 
-#Main program
+
+# Main program
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
 
@@ -164,19 +172,22 @@ if __name__ == '__main__':
                     default=0.5)
     ap.add_argument("-seam", help="Seam orientation (h = horizontal seam, v = vertical seam",
                     required=True)
-    ap.add_argument("-energy", help="Energy mapping algorithm (s = Sobel, p = Prewitt, l = Laplacian, r = Roberts, f = Forward energy)", required=False, default='s')
-    ap.add_argument("-plot", help="Plot result after resizing", action='store_true')
+    ap.add_argument(
+        "-energy", help="Energy mapping algorithm (s = Sobel, p = Prewitt, l = Laplacian, r = Roberts, f = Forward energy)", required=False, default='s')
+    ap.add_argument("-plot", help="Plot result after resizing",
+                    action='store_true')
     args = vars(ap.parse_args())
 
-    IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args["in"], args["scale"], args["seam"], args["energy"]
+    IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args[
+        "in"], args["scale"], args["seam"], args["energy"]
 
-    #create results directory
+    # create results directory
     path("../results").mkdir(parents=True, exist_ok=True)
     path("../results/resized_images/").mkdir(parents=True, exist_ok=True)
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
 
-    #paths definition
+    # paths definition
     IMG_PATH = "../images/" + IMG_NAME
 
     input_image = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
@@ -194,7 +205,7 @@ if __name__ == '__main__':
                                 be.canny,
                                 fe.fast_forward_energy]
 
-    #Run program for all the energy mapping algorithms implemented
+    # Run program for all the energy mapping algorithms implemented
     if ENERGY_ALGORITHM == "all":
         for a in ALGORITHMS:
             ENERGY_ALGORITHM = a
@@ -202,34 +213,37 @@ if __name__ == '__main__':
 
             if SEAM_ORIENTATION == 'h':
                 print("Performing seam carving with energy mapping function "
-                        + energyFunction.__name__ + "()...")
+                      + energyFunction.__name__ + "()...")
 
                 img = np.rot90(input_image, 1, (0, 1))
                 img = resize(img, SCALE)
                 out = np.rot90(img, 3, (0, 1))
             elif SEAM_ORIENTATION == 'v':
                 print("Performing seam carving with energy mapping function "
-                        + energyFunction.__name__ + "()...")
+                      + energyFunction.__name__ + "()...")
 
                 out = resize(input_image, SCALE)
             else:
                 print("Error: invalid arguments. Use -h argument for help")
                 sys.exit(1)
 
-            #Plot the result if requested by the user
+            # Plot the result if requested by the user
             if args["plot"]:
                 plotResult(input_image, out, energyFunction)
 
             print("Seam carving with energy energy mapping function "
-                    + energyFunction.__name__ + "() completed.")
+                  + energyFunction.__name__ + "() completed.")
 
-            OUTPUT_PATH = "../results/resized_images/" + (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
+            OUTPUT_PATH = "../results/resized_images/" + \
+                (os.path.splitext(IMG_NAME)[0]) + \
+                "_" + ENERGY_ALGORITHM + ".jpg"
             out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
             cv2.imwrite(OUTPUT_PATH, out)
 
-    else: #Run program for a specific algorithm
+    else:  # Run program for a specific algorithm
 
-        energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(ENERGY_ALGORITHM)]
+        energyFunction = ENERGY_MAPPING_FUNCTIONS[ALGORITHMS.index(
+            ENERGY_ALGORITHM)]
 
         if SEAM_ORIENTATION == 'h':
             img = np.rot90(input_image, 1, (0, 1))
@@ -240,13 +254,16 @@ if __name__ == '__main__':
         else:
             print("Error: invalid arguments. Use -h argument for help")
             sys.exit(1)
-        #Plot the result if requested by the user
+
+        # Plot the result if requested by the user
         if args["plot"]:
             plotResult(input_image, out, energyFunction)
 
         print("Seam carving with energy mapping function "
-                + energyFunction.__name__ + " completed.")
+              + energyFunction.__name__ + " completed.")
 
-        OUTPUT_PATH = "../results/resized_images/" + (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
+        OUTPUT_PATH = "../results/resized_images/" + \
+            (os.path.splitext(IMG_NAME)[0]) + "_" + ENERGY_ALGORITHM + ".jpg"
+        
         out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
         cv2.imwrite(OUTPUT_PATH, out)
