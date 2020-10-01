@@ -84,8 +84,7 @@ def findSeam(img):
 
     # calculates the energy of each pixel using edge detection algorithms. e.g. Sobel, Prewitt, etc.
     energy_map = calculateEnergy(img)
-    print(len(energy_map))
-    exit()
+
     # the energy map is copied into M
     M = energy_map.copy()
     # creates the backtrack to find the list of pixels present in the found seam
