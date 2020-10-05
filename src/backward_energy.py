@@ -17,7 +17,6 @@ LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
 LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "em_laplacian.jpg"
 ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
 ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "em_roberts.jpg"
-CANNY_EDGE_PATH = EDGE_DETECTION_PATH + "canny.jpg"
 CANNY_ENERGY_PATH = ENERGY_MAP_PATH + "em_canny.jpg"
 
 
@@ -32,8 +31,6 @@ class BackwardEnergy:
             self.input_image = np.rot90(input_image, 1, (0, 1))
         else:
             self.input_image = input_image
-
-        self.canny_edge_detector = self.CannyEdgeDetector(input_image)
 
     def sobel(self, img):
         """
@@ -162,6 +159,10 @@ class BackwardEnergy:
         return self.energy_map
 
     def canny(self, img):
-        self.energy_map = cv2.Canny(img, 100, 200)
+        self.energy_map = cv2.Canny(img, 100, 100, L2gradient=True)
+
+        if img.shape[1] == self.input_image.shape[1]:
+            cv2.imwrite(CANNY_ENERGY_PATH, np.rot90(
+                self.energy_map, 3, (0, 1)))
 
         return self.energy_map
