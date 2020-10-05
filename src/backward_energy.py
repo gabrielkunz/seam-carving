@@ -17,6 +17,8 @@ LAPLACIAN_EDGE_PATH = EDGE_DETECTION_PATH + "laplacian.jpg"
 LAPLACIAN_ENERGY_PATH = ENERGY_MAP_PATH + "em_laplacian.jpg"
 ROBERTS_EDGE_PATH = EDGE_DETECTION_PATH + "roberts.jpg"
 ROBERTS_ENERGY_PATH = ENERGY_MAP_PATH + "em_roberts.jpg"
+CANNY_EDGE_PATH = EDGE_DETECTION_PATH + "canny.jpg"
+CANNY_ENERGY_PATH = ENERGY_MAP_PATH + "em_canny.jpg"
 
 
 class BackwardEnergy:
@@ -160,8 +162,7 @@ class BackwardEnergy:
         return self.energy_map
 
     def canny(self, img):
-        self.energy_map = self.canny_edge_detector.detect(
-            img, sigma=1.4, kernel_size=5, lowthreshold=0.09, highthreshold=0.17, weak_pixel=100)
+        self.energy_map = self.canny_edge_detector.detect(img=img, sigma=1.4, kernel_size=5, lowthreshold=0.09, highthreshold=0.17, weak_pixel=100)
 
         return self.energy_map
 
@@ -289,8 +290,9 @@ class BackwardEnergy:
 
             return img
 
-        def detect(self,img, sigma=1.4, kernel_size=5, lowthreshold=0.09, highthreshold=0.17, weak_pixel=100):
+        def detect(self, img, sigma=1.4, kernel_size=5, lowthreshold=0.09, highthreshold=0.17, weak_pixel=100):
             img_final = []
+
             for _, img in enumerate(self.img):
                 self.img_smoothed = convolve(
                     img, self.gaussian_kernel(self.kernel_size, self.sigma))
@@ -300,6 +302,12 @@ class BackwardEnergy:
                     self.gradient_mat, self.theta_mat)
                 self.threshold_img = self.threshold(self.non_max_img)
                 img_final = self.hysteresis(self.threshold_img)
-                self.energy_map.append(img_final)
+                
+            img_final = np.stack([img_final] * 3, axis=2)
+            self.energy_map = img_final.sum(axis=2)
+
+            cv2.imwrite(CANNY_EDGE_PATH, np.rot90(img_final, 3, (0, 1)))
+            cv2.imwrite(CANNY_ENERGY_PATH, np.rot90(
+                self.energy_map, 3, (0, 1)))
 
             return self.energy_map
