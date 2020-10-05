@@ -12,7 +12,7 @@ Demo: https://www.aryan.app/seam-carving/
 
 ## Context & Environment
 
-The program was developed and tested on a MacBook Pro 13-inch running macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS (e.g., Ubuntu).
+The program was developed and tested on macOS 10.15.6. The same bash commands should work on a machine running a unix-based OS (e.g., Ubuntu).
 
 On a Windows machine, the required packages can be easily installed using [Anaconda](https://www.anaconda.com/). Afterwards, the program can be executed using PowerShell launched by Anaconda Navigator.
 
