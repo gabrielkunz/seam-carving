@@ -29,7 +29,7 @@ plt.rcParams.update(rc)
 warnings.filterwarnings("ignore", category=Warning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-
+# Seam carving calling function
 def resize(img, scale):
     """
     Defines the new image shape based on scale provided
@@ -43,8 +43,6 @@ def resize(img, scale):
     return img
 
 # Seam carving functions
-
-
 @jit
 def seamCarving(img):
     """
@@ -72,7 +70,6 @@ def seamCarving(img):
     # deletes the flagged pixels and resize the image to the new dimension
     img = img[mask].reshape((rows, columns - 1, 3))
     return img
-
 
 @jit
 def findSeam(img):
@@ -111,7 +108,6 @@ def findSeam(img):
 
     return M, backtrack
 
-
 def calculateEnergy(img):
     """
     Calculates the energy map using edge detection algorithms for backward energy
@@ -136,9 +132,24 @@ def calculateEnergy(img):
     return energy_map
 
 # Other functions
+def standardResize(img, scale, seam_orientation):
+    """
+    Resize the image without considering its content
+    """
+    if seam_orientation == 'h':
+        width = img.shape[1]
+        height = int(img.shape[0] * scale)
+        dsize = (width, height)
+        std_resize_image = cv2.resize(img, dsize)
+    elif seam_orientation == 'v':
+        width = int(img.shape[1]*scale)
+        height = img.shape[0]
+        dsize = (width, height)
+        std_resize_image = cv2.resize(img, dsize)
 
+    return std_resize_image
 
-def plotResult(img, out, energyFunction):
+def plotResult(img, out, std_resize_image, energyFunction):
     """
     Plot the original image with its mean energy, energy map and
     the resized image with its mean energy.
@@ -148,20 +159,31 @@ def plotResult(img, out, energyFunction):
     # Fix message blinking when hover
     fig.canvas.toolbar.set_message = lambda x: ""
 
-    plt.subplot(211)
+    plt.subplot(221)
     plt.imshow(img)
-    plt.title('Original Image\n'+'Mean energy = ' + str(np.mean(img)))
+    plt.title('Original Image\n')
+
+    plt.subplot(222)
+    plt.imshow(energyFunction(img))
+    plt.title('Energy Map - ' + (energyFunction.__name__).capitalize())
 
     plt.subplot(223)
-    plt.imshow(energyFunction(img))
-    plt.title('Energy Map (' + energyFunction.__name__ + ')')
+    plt.imshow(std_resize_image)
+    plt.title('Standard Resize Image\n')
 
     plt.subplot(224)
     plt.imshow(out)
-    plt.title('Carving Result\n'+'Mean energy = ' + str(np.mean(out)))
+    plt.title('Seam Carving Result\n')
 
     plt.show()
 
+    img_mean_energy = np.mean(img)
+    std_mean_energy = np.mean(std_resize_image)
+    out_mean_energy = np.mean(out)
+
+    print(str(img.shape[0]) + "x" + str(img.shape[1]))
+    print(str(std_resize_image.shape[0]) + "x" + str(std_resize_image.shape[1]))
+    print(str(out.shape[0]) + "x" + str(out.shape[1]))
 
 # Main program
 if __name__ == '__main__':
@@ -191,6 +213,7 @@ if __name__ == '__main__':
     IMG_PATH = "../images/" + IMG_NAME
 
     input_image = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
+    std_resize_image = standardResize(input_image, SCALE, SEAM_ORIENTATION)
 
     # Instantiate the energy mapping classes
     be = BackwardEnergy(input_image, SEAM_ORIENTATION)
@@ -229,7 +252,7 @@ if __name__ == '__main__':
 
             # Plot the result if requested by the user
             if args["plot"]:
-                plotResult(input_image, out, energyFunction)
+                plotResult(input_image, out, std_resize_image , energyFunction)
 
             print("Seam carving with energy energy mapping function "
                   + energyFunction.__name__ + "() completed.")
@@ -257,7 +280,7 @@ if __name__ == '__main__':
 
         # Plot the result if requested by the user
         if args["plot"]:
-            plotResult(input_image, out, energyFunction)
+            plotResult(input_image, out, std_resize_image, energyFunction)
 
         print("Seam carving with energy mapping function "
               + energyFunction.__name__ + " completed.")
