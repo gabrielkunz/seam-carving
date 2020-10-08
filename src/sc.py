@@ -181,9 +181,15 @@ def plotResult(img, out, std_resize_image, energyFunction):
     std_mean_energy = np.mean(std_resize_image)
     out_mean_energy = np.mean(out)
 
-    print(str(img.shape[0]) + "x" + str(img.shape[1]))
-    print(str(std_resize_image.shape[0]) + "x" + str(std_resize_image.shape[1]))
-    print(str(out.shape[0]) + "x" + str(out.shape[1]))
+def metrics(img, out, std_resize_image, img_name, energyFunction):
+    """
+    Calculate the metrics for comparison between each energy mapping
+    method used for the seam carving. The metrics used are:
+    - Mean energy
+    - Shannon entropy
+    - Mutual information
+    """
+
 
 # Main program
 if __name__ == '__main__':
