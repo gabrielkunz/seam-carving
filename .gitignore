@@ -125,6 +125,8 @@ dmypy.json
 .pyre/
 
 # User ignore
-results/
+results/edge_detection_images
+results/energy_maps
+results/resized_images
 .DS_Store
 .vscode/settings.json

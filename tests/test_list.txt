@@ -1,0 +1,23 @@
+Test list:
+
+python3 sc.py -in test.png -scale 0.5 -seam h -energy all
+python3 sc.py -in test.png -scale 0.5 -seam h -energy s
+python3 sc.py -in test.png -scale 0.5 -seam h -energy p
+python3 sc.py -in test.png -scale 0.5 -seam h -energy l
+python3 sc.py -in test.png -scale 0.5 -seam h -energy r
+python3 sc.py -in test.png -scale 0.5 -seam h -energy f
+
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy all
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy s
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy p
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy l
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy r
+python3 sc.py -in amalfi.jpg -scale 0.5 -seam h -energy f
+
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy all
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy s
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy p
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy l
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy r
+python3 sc.py -in camping.jpg -scale 0.5 -seam h -energy f
+

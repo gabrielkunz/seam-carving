@@ -5,9 +5,11 @@ import os
 import argparse
 import warnings
 from pathlib import Path as path
+import csv
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import skimage.measure
 from tqdm import trange
 from numba import jit
 
@@ -177,11 +179,7 @@ def plotResult(img, out, std_resize_image, energyFunction):
 
     plt.show()
 
-    img_mean_energy = np.mean(img)
-    std_mean_energy = np.mean(std_resize_image)
-    out_mean_energy = np.mean(out)
-
-def metrics(img, out, std_resize_image, img_name, energyFunction):
+def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
     """
     Calculate the metrics for comparison between each energy mapping
     method used for the seam carving. The metrics used are:
@@ -190,6 +188,17 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
     - Mutual information
     """
 
+    img_mean_energy = np.mean(img)
+    std_mean_energy = np.mean(std_resize_image)
+    out_mean_energy = np.mean(out)
+
+    img_entropy = skimage.measure.shannon_entropy(img)
+    std_entropy = skimage.measure.shannon_entropy(std_resize_image)
+    out_entropy = skimage.measure.shannon_entropy(out)
+
+    with open('../results/metrics.csv', 'a') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy, img_entropy, std_entropy, out_entropy])
 
 # Main program
 if __name__ == '__main__':
@@ -204,16 +213,24 @@ if __name__ == '__main__':
         "-energy", help="Energy mapping algorithm (s = Sobel, p = Prewitt, l = Laplacian, r = Roberts, f = Forward energy)", required=False, default='s')
     ap.add_argument("-plot", help="Plot result after resizing",
                     action='store_true')
+    ap.add_argument("-metrics", help="Save metrics in a .csv file", action='store_true')
     args = vars(ap.parse_args())
 
     IMG_NAME, SCALE, SEAM_ORIENTATION, ENERGY_ALGORITHM = args[
         "in"], args["scale"], args["seam"], args["energy"]
 
-    # create results directory
+    # Create results directory
     path("../results").mkdir(parents=True, exist_ok=True)
     path("../results/resized_images/").mkdir(parents=True, exist_ok=True)
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
+
+    # Create .csv file for metrics if requested by the user
+    if args["metrics"]:
+        metrics_file = open("../results/metrics.csv",'w')
+        with open('../results/metrics.csv', 'w') as csvfile:
+            writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
 
     # paths definition
     IMG_PATH = "../images/" + IMG_NAME
@@ -260,6 +277,10 @@ if __name__ == '__main__':
             if args["plot"]:
                 plotResult(input_image, out, std_resize_image , energyFunction)
 
+            # Calculate and save metrics if requested by the user
+            if args["metrics"]:
+                metrics(input_image, out, std_resize_image, IMG_NAME, energyFunction, metrics_file)
+
             print("Seam carving with energy energy mapping function "
                   + energyFunction.__name__ + "() completed.")
 
@@ -288,6 +309,10 @@ if __name__ == '__main__':
         if args["plot"]:
             plotResult(input_image, out, std_resize_image, energyFunction)
 
+        # Calculate and save metrics if requested by the user
+        if args["metrics"]:
+            metrics(input_image, out, std_resize_image , energyFunction, metrics_file)
+        
         print("Seam carving with energy mapping function "
               + energyFunction.__name__ + " completed.")
 
