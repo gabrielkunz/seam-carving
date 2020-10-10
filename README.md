@@ -77,8 +77,7 @@ In case you need help with the parameters, just run the command below:
 
 ```console
 foo@bar src % python3 sc.py -h
-usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY] [-plot]
-             [-metrics]
+usage: sc.py [-h] -in IN -scale SCALE -seam SEAM [-energy ENERGY] [-plot] [-metrics]
 
 optional arguments:
   -h, --help      show this help message and exit
