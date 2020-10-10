@@ -197,7 +197,7 @@ def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
     out_entropy = skimage.measure.shannon_entropy(out)
 
     with open('../results/metrics.csv', 'a') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy, img_entropy, std_entropy, out_entropy])
 
 # Main program
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     if args["metrics"]:
         metrics_file = open("../results/metrics.csv",'w')
         with open('../results/metrics.csv', 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
 
     # paths definition
