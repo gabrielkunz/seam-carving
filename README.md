@@ -83,7 +83,7 @@ optional arguments:
   -h, --help      show this help message and exit
   -in IN          Path to input image
   -scale SCALE    Downsizing scale. e.g. 0.5
-  -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam
+  -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam)
   -energy ENERGY  Energy mapping algorithm (s = Sobel, p = Prewitt, l =
                   Laplacian, r = Roberts, f = Forward energy)
   -plot           Plot result after resizing
