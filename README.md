@@ -85,7 +85,7 @@ optional arguments:
   -scale SCALE    Downsizing scale. e.g. 0.5
   -seam SEAM      Seam orientation (h = horizontal seam, v = vertical seam)
   -energy ENERGY  Energy mapping algorithm (s = Sobel, p = Prewitt, l =
-                  Laplacian, r = Roberts, f = Forward energy)
+                  Laplacian, r = Roberts, c = Canny, f = Forward energy)
   -plot           Plot result after resizing
   -metrics        Save metrics in a .csv file
 ```
