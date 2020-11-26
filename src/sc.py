@@ -17,13 +17,13 @@ from backward_energy import BackwardEnergy
 from forward_energy import ForwardEnergy
 
 rc = {"figure.constrained_layout.use": True,
-      "axes.spines.left": False,
+      "axes.spines.left": True,
       "axes.spines.right": False,
-      "axes.spines.bottom": False,
+      "axes.spines.bottom": True,
       "axes.spines.top": False,
       "xtick.bottom": False,
-      "xtick.labelbottom": False,
-      "ytick.labelleft": False,
+      "xtick.labelbottom": True,
+      "ytick.labelleft": True,
       "ytick.left": False}
 plt.rcParams.update(rc)
 
@@ -171,11 +171,11 @@ def plotResult(img, out, std_resize_image, energyFunction, scale):
 
     plt.subplot(223)
     plt.imshow(std_resize_image)
-    plt.title('Standard Resize result (scale = ' + str(scale) + ')')
+    plt.title('Standard Resize result (resize scale = ' + str(scale) + ')')
 
     plt.subplot(224)
     plt.imshow(out)
-    plt.title('Seam Carving result (scale = ' + str(scale) + ')')
+    plt.title('Seam Carving result (resize scale = ' + str(scale) + ')')
 
     plt.tight_layout()
     plt.show()
