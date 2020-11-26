@@ -151,7 +151,7 @@ def standardResize(img, scale, seam_orientation):
 
     return std_resize_image
 
-def plotResult(img, out, std_resize_image, energyFunction):
+def plotResult(img, out, std_resize_image, energyFunction, scale):
     """
     Plot the original image with its mean energy, energy map and
     the resized image with its mean energy.
@@ -163,19 +163,19 @@ def plotResult(img, out, std_resize_image, energyFunction):
 
     plt.subplot(221)
     plt.imshow(img)
-    plt.title('Original Image')
+    plt.title('Original image')
 
     plt.subplot(222)
     plt.imshow(energyFunction(img))
-    plt.title('Energy Map - ' + (energyFunction.__name__).capitalize())
+    plt.title('Energy map - ' + (energyFunction.__name__).capitalize())
 
     plt.subplot(223)
     plt.imshow(std_resize_image)
-    plt.title('Standard Resize Image')
+    plt.title('Standard Resize result (scale = ' + str(scale) + ')')
 
     plt.subplot(224)
     plt.imshow(out)
-    plt.title('Seam Carving Result')
+    plt.title('Seam Carving result (scale = ' + str(scale) + ')')
 
     plt.tight_layout()
     plt.show()
@@ -286,7 +286,7 @@ if __name__ == '__main__':
 
             # Plot the result if requested by the user
             if args["plot"]:
-                plotResult(input_image, out, std_resize_image , energyFunction)
+                plotResult(input_image, out, std_resize_image , energyFunction, SCALE)
 
             # Calculate and save metrics if requested by the user
             if args["metrics"]:
@@ -318,7 +318,7 @@ if __name__ == '__main__':
 
         # Plot the result if requested by the user
         if args["plot"]:
-            plotResult(input_image, out, std_resize_image, energyFunction)
+            plotResult(input_image, out, std_resize_image, energyFunction, SCALE)
 
         # Calculate and save metrics if requested by the user
         if args["metrics"]:
