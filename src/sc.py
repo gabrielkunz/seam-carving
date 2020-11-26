@@ -163,7 +163,7 @@ def plotResult(img, out, std_resize_image, energyFunction):
 
     plt.subplot(221)
     plt.imshow(img)
-    plt.title('Original Image\n')
+    plt.title('Original Image')
 
     plt.subplot(222)
     plt.imshow(energyFunction(img))
@@ -171,12 +171,13 @@ def plotResult(img, out, std_resize_image, energyFunction):
 
     plt.subplot(223)
     plt.imshow(std_resize_image)
-    plt.title('Standard Resize Image\n')
+    plt.title('Standard Resize Image')
 
     plt.subplot(224)
     plt.imshow(out)
-    plt.title('Seam Carving Result\n')
+    plt.title('Seam Carving Result')
 
+    plt.tight_layout()
     plt.show()
 
 def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
