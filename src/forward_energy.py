@@ -25,7 +25,7 @@ class ForwardEnergy:
         else:
             self.input_image = input_image
 
-    def fast_forward_energy(self, img):
+    def forward_energy(self, img):
         h, w = img.shape[:2]
         img = cv2.cvtColor(img.astype(np.uint8),
                            cv2.COLOR_BGR2GRAY).astype(np.float64)

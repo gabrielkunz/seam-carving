@@ -125,7 +125,7 @@ def calculateEnergy(img):
     elif ENERGY_ALGORITHM == 'r':
         energy_map = be.roberts(img)
     elif ENERGY_ALGORITHM == 'f':
-        energy_map = fe.fast_forward_energy(img)
+        energy_map = fe.forward_energy(img)
     elif ENERGY_ALGORITHM == 'c':
         energy_map = be.canny(img)
     else:
@@ -267,7 +267,7 @@ if __name__ == '__main__':
                                 be.laplacian,
                                 be.roberts,
                                 be.canny,
-                                fe.fast_forward_energy]
+                                fe.forward_energy]
 
     # Run program for all the energy mapping algorithms implemented
     if ENERGY_ALGORITHM == "all":
