@@ -94,7 +94,7 @@ optional arguments:
   -metrics        Save metrics in a .csv file
 ```
 
-## License
+## Acknowledgements
 Parts of the code are adapted/optimized versions of functionality from other implementations:
 * https://github.com/andrewdcampbell/seam-carving
 * https://github.com/axu2/improved-seam-carving
