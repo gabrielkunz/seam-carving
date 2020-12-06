@@ -6,6 +6,10 @@ Content-Aware Scaling using Seam Carving method with different algorithms for en
 
 ![Demo](demos/demo1.png)
 
+The implementation is similar to the 'Content-Aware Scale' tool present in Adobe Photoshop, which is also based in the Seam Carving method:
+
+![Demo](demos/demo2.gif)
+
 Quick reference: https://en.wikipedia.org/wiki/Seam_carving
 
 Demo: https://www.aryan.app/seam-carving/
@@ -89,6 +93,13 @@ optional arguments:
   -plot           Plot result after resizing
   -metrics        Save metrics in a .csv file
 ```
+
+## Acknowledgements
+Parts of the code are adapted/optimized versions of functionality from other implementations:
+* https://github.com/andrewdcampbell/seam-carving
+* https://github.com/axu2/improved-seam-carving
+* https://github.com/vivianhylee/seam-carving
+* https://karthikkaranth.me/blog/implementing-seam-carving-with-python/
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
