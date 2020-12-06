@@ -151,7 +151,7 @@ def standardResize(img, scale, seam_orientation):
 
     return std_resize_image
 
-def plotResult(img, out, std_resize_image, energyFunction, scale):
+def plotResult(img, out, std_resize_image, energyFunction, scale, img_name):
     """
     Plot the original image with its mean energy, energy map and
     the resized image with its mean energy.
@@ -178,7 +178,13 @@ def plotResult(img, out, std_resize_image, energyFunction, scale):
     plt.title('Seam Carving result (resize scale = ' + str(scale) + ')')
 
     plt.tight_layout()
+
+    figure = plt.gcf()
     plt.show()
+
+    fig_name = "plt_" + energyFunction.__name__ + "_" + img_name[:-4]
+    fig_path = "../results/plot_figures/" + fig_name
+    figure.savefig(fig_path + ".png")
 
 def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
     """
@@ -229,6 +235,7 @@ if __name__ == '__main__':
     path("../results/resized_images/").mkdir(parents=True, exist_ok=True)
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
+    path("../results/plot_figures/").mkdir(parents=True, exist_ok=True)
 
     # Create .csv file for metrics if requested by the user
     if args["metrics"]:
@@ -286,7 +293,7 @@ if __name__ == '__main__':
 
             # Plot the result if requested by the user
             if args["plot"]:
-                plotResult(input_image, out, std_resize_image , energyFunction, SCALE)
+                plotResult(input_image, out, std_resize_image , energyFunction, SCALE, IMG_NAME)
 
             # Calculate and save metrics if requested by the user
             if args["metrics"]:
@@ -318,7 +325,7 @@ if __name__ == '__main__':
 
         # Plot the result if requested by the user
         if args["plot"]:
-            plotResult(input_image, out, std_resize_image, energyFunction, SCALE)
+            plotResult(input_image, out, std_resize_image, energyFunction, SCALE, IMG_NAME)
 
         # Calculate and save metrics if requested by the user
         if args["metrics"]:
