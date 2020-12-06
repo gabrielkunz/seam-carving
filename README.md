@@ -6,6 +6,8 @@ Content-Aware Scaling using Seam Carving method with different algorithms for en
 
 ![Demo](demos/demo1.png)
 
+The implementation is similar to the 'Content-Aware Scale' tool present in Adobe Photoshop, which is also based in the Seam Carving method:
+
 ![Demo](demos/demo2.gif)
 
 Quick reference: https://en.wikipedia.org/wiki/Seam_carving
