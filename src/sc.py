@@ -180,7 +180,7 @@ def plotResult(img, out, std_resize_image, energyFunction, scale, img_name):
     plt.tight_layout()
 
     figure = plt.gcf()
-    plt.show()
+    #plt.show()
 
     fig_name = "plt_" + energyFunction.__name__ + "_" + img_name[:-4]
     fig_path = "../results/plot_figures/" + fig_name
@@ -203,13 +203,13 @@ def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
     std_entropy = skimage.measure.shannon_entropy(std_resize_image)
     out_entropy = skimage.measure.shannon_entropy(out)
 
-    with open('../results/metrics.csv', 'a') as csvfile:
+    with open('../results/metrics_energy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy, img_entropy, std_entropy, out_entropy])
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy])
 
-    with open('../results/metrics_excel.csv', 'a') as csvfile:
+    with open('../results/metrics_entropy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy, img_entropy, std_entropy, out_entropy])
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, img_entropy, std_entropy, out_entropy])
 
 # Main program
 if __name__ == '__main__':
@@ -239,16 +239,16 @@ if __name__ == '__main__':
 
     # Create .csv file for metrics if requested by the user
     if args["metrics"]:
-        metrics_file = open("../results/metrics.csv",'w')
-        metrics_excel_file = open("../results/metrics_excel.csv",'w')
+        metrics_file = open("../results/metrics_energy.csv",'w')
+        metrics_excel_file = open("../results/metrics_entropy.csv",'w')
 
-        with open('../results/metrics.csv', 'w') as csvfile:
+        with open('../results/metrics_energy.csv', 'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
+            writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy"])
 
-        with open('../results/metrics_excel.csv', 'w') as csvfile:
+        with open('../results/metrics_entropy.csv', 'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
+            writer.writerow(["Image filename", "Energy mapping algorithm", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
 
     # paths definition
     IMG_PATH = "../images/" + IMG_NAME
