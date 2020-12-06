@@ -182,11 +182,11 @@ def plotResult(img, out, std_resize_image, energyFunction, scale, img_name):
     figure = plt.gcf()
     #plt.show()
 
-    fig_name = "plt_" + energyFunction.__name__ + "_" + img_name[:-4]
+    fig_name = "plt_" + img_name[:-4] + "_" + energyFunction.__name__ 
     fig_path = "../results/plot_figures/" + fig_name
     figure.savefig(fig_path + ".png")
 
-def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
+def metrics(img, out, std_resize_image, img_name, energyFunction):
     """
     Calculate the metrics for comparison between each energy mapping
     method used for the seam carving. The metrics used are:
@@ -205,11 +205,11 @@ def metrics(img, out, std_resize_image, img_name, energyFunction, metrics_file):
 
     with open('../results/metrics_energy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, out_mean_energy])
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, out_mean_energy, std_mean_energy])
 
     with open('../results/metrics_entropy.csv', 'a') as csvfile:
-        writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, std_mean_energy, img_entropy, std_entropy, out_entropy])
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_entropy, out_entropy, std_entropy])
 
 # Main program
 if __name__ == '__main__':
@@ -239,16 +239,16 @@ if __name__ == '__main__':
 
     # Create .csv file for metrics if requested by the user
     if args["metrics"]:
-        metrics_file = open("../results/metrics_energy.csv",'w')
-        metrics_excel_file = open("../results/metrics_entropy.csv",'w')
+        if os.path.exists("../results/metrics_energy.csv"):
+            print("Metrics file already exists, append mode will be used.")
+        else:
+            with open('../results/metrics_energy.csv', 'w') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Seam carving mean energy", "Standard resize mean energy"])
 
-        with open('../results/metrics_energy.csv', 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["Image filename", "Energy mapping algorithm", "Original mean energy", "Standard resize mean energy", "Seam carving mean energy"])
-
-        with open('../results/metrics_entropy.csv', 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(["Image filename", "Energy mapping algorithm", "Original entropy", "Strandard resize entropy", "Seam carving entropy"])
+            with open('../results/metrics_entropy.csv', 'w') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Image filename", "Energy mapping algorithm", "Original entropy", "Seam carving entropy", "Strandard resize entropy"])
 
     # paths definition
     IMG_PATH = "../images/" + IMG_NAME
@@ -297,7 +297,7 @@ if __name__ == '__main__':
 
             # Calculate and save metrics if requested by the user
             if args["metrics"]:
-                metrics(input_image, out, std_resize_image, IMG_NAME, energyFunction, metrics_file)
+                metrics(input_image, out, std_resize_image, IMG_NAME, energyFunction)
 
             print("Seam carving with energy energy mapping function "
                   + energyFunction.__name__ + "() completed.")
@@ -329,7 +329,7 @@ if __name__ == '__main__':
 
         # Calculate and save metrics if requested by the user
         if args["metrics"]:
-            metrics(input_image, out, std_resize_image , energyFunction, metrics_file)
+            metrics(input_image, out, std_resize_image , energyFunction)
         
         print("Seam carving with energy mapping function "
               + energyFunction.__name__ + " completed.")
