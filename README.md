@@ -95,4 +95,11 @@ optional arguments:
 ```
 
 ## License
+Parts of the code are adapted/optimized versions of functionality from other implementations:
+* https://github.com/andrewdcampbell/seam-carving
+* https://github.com/axu2/improved-seam-carving
+* https://github.com/vivianhylee/seam-carving
+* https://karthikkaranth.me/blog/implementing-seam-carving-with-python/
+
+## License
 [MIT](https://choosealicense.com/licenses/mit/)
