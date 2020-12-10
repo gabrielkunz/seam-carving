@@ -134,7 +134,7 @@ def calculateEnergy(img):
     return energy_map
 
 # Other functions
-def standardResize(img, scale, seam_orientation):
+def standardResize(img, img_name, scale, seam_orientation):
     """
     Resize the image without considering its content
     """
@@ -149,6 +149,11 @@ def standardResize(img, scale, seam_orientation):
         dsize = (width, height)
         std_resize_image = cv2.resize(img, dsize)
 
+    std_resize_image = cv2.cvtColor(std_resize_image, cv2.COLOR_BGR2RGB)
+    std_resize_image_name = img_name[:-4] + "_std.jpg"
+    std_resize_path = "../results/resized_images/" + std_resize_image_name
+    cv2.imwrite(std_resize_path, std_resize_image)
+
     return std_resize_image
 
 def plotResult(img, out, std_resize_image, energyFunction, scale, img_name):
@@ -161,19 +166,11 @@ def plotResult(img, out, std_resize_image, energyFunction, scale, img_name):
     # Fix message blinking when hover
     fig.canvas.toolbar.set_message = lambda x: ""
 
-    plt.subplot(221)
-    plt.imshow(img)
-    plt.title('Original image')
-
-    plt.subplot(222)
+    plt.subplot(211)
     plt.imshow(energyFunction(img))
     plt.title('Energy map - ' + (energyFunction.__name__).capitalize())
 
-    plt.subplot(223)
-    plt.imshow(std_resize_image)
-    plt.title('Standard Resize result (resize scale = ' + str(scale) + ')')
-
-    plt.subplot(224)
+    plt.subplot(212)
     plt.imshow(out)
     plt.title('Seam Carving result (resize scale = ' + str(scale) + ')')
 
@@ -254,7 +251,7 @@ if __name__ == '__main__':
     IMG_PATH = "../images/" + IMG_NAME
 
     input_image = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
-    std_resize_image = standardResize(input_image, SCALE, SEAM_ORIENTATION)
+    std_resize_image = standardResize(input_image, IMG_NAME, SCALE, SEAM_ORIENTATION)
 
     # Instantiate the energy mapping classes
     be = BackwardEnergy(input_image, SEAM_ORIENTATION)
