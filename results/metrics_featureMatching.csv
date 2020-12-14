@@ -1,0 +1,19 @@
+Image filename,Energy mapping algorithm,Number of matches
+amalfi.jpg,Sobel,4520
+amalfi.jpg,Prewitt,4512
+amalfi.jpg,Laplacian,4442
+amalfi.jpg,Roberts,4483
+amalfi.jpg,Canny,4451
+amalfi.jpg,Forward_energy,4457
+camping.jpg,Sobel,573
+camping.jpg,Prewitt,578
+camping.jpg,Laplacian,514
+camping.jpg,Roberts,564
+camping.jpg,Canny,609
+camping.jpg,Forward_energy,564
+tower.jpg,Sobel,1210
+tower.jpg,Prewitt,1209
+tower.jpg,Laplacian,1191
+tower.jpg,Roberts,1192
+tower.jpg,Canny,1270
+tower.jpg,Forward_energy,1226

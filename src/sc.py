@@ -187,7 +187,7 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
     method used for the seam carving. The metrics used are:
     - Mean energy
     - Shannon entropy
-    - Mutual information
+    - Feature matching with Scale Invariant Feature Transform (SIFT)
     """
 
     img_mean_energy = np.mean(img)
@@ -198,6 +198,11 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
     std_entropy = skimage.measure.shannon_entropy(std_resize_image)
     out_entropy = skimage.measure.shannon_entropy(out)
 
+    filename_out = 'fm_' + img_name[:-4] + '_' + energyFunction.__name__
+    filename_std = 'fm_' + img_name[:-4] + '_std'
+    fm_number_of_matches_out = featureMatching(img, out, filename_out)
+    fm_number_of_matches_std = featureMatching(img, std_resize_image, filename_std)
+
     with open('../results/metrics_energy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_mean_energy, out_mean_energy, std_mean_energy])
@@ -205,6 +210,51 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
     with open('../results/metrics_entropy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_entropy, out_entropy, std_entropy])
+
+    with open('../results/metrics_featureMatching.csv', 'a') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow([img_name, (energyFunction.__name__).capitalize(), fm_number_of_matches_out])
+
+def featureMatching(img1, img2, filename):
+    # Initiate SIFT detector
+    sift = cv2.xfeatures2d.SIFT_create()
+
+    # find the keypoints and descriptors with SIFT
+    kp1, des1 = sift.detectAndCompute(img1,None)
+    kp2, des2 = sift.detectAndCompute(img2,None)
+
+    # FLANN parameters
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks=50)   # or pass empty dictionary
+    flann = cv2.FlannBasedMatcher(index_params,search_params)
+    matches = flann.knnMatch(des1,des2,k=2)
+
+    # Need to draw only good matches, so create a mask
+    matchesMask = [[0,0] for i in range(len(matches))]
+
+    # ratio test as per Lowe's paper
+    number_of_matches = 0
+
+    for i,(m,n) in enumerate(matches):
+        if m.distance < 0.7*n.distance:
+            matchesMask[i]=[1,0]
+            number_of_matches = number_of_matches + 1
+    draw_params = dict(matchColor = (0,255,0),
+                    singlePointColor = (255,0,0),
+                    matchesMask = matchesMask,
+                    flags = cv2.DrawMatchesFlags_DEFAULT)
+    img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
+
+    plt.imshow(img3,)
+    plt.title('Number of feature matches = ' + str(number_of_matches))
+    figure = plt.gcf()
+    #plt.show()
+
+    fig_path = "../results/feature_matching/" + filename
+    figure.savefig(fig_path)
+
+    return number_of_matches
 
 
 # Main program
@@ -232,6 +282,7 @@ if __name__ == '__main__':
     path("../results/edge_detection_images/").mkdir(parents=True, exist_ok=True)
     path("../results/energy_maps/").mkdir(parents=True, exist_ok=True)
     path("../results/plot_figures/").mkdir(parents=True, exist_ok=True)
+    path("../results/feature_matching/").mkdir(parents=True, exist_ok=True)
 
     # Create .csv file for metrics if requested by the user
     if args["metrics"]:
@@ -245,6 +296,10 @@ if __name__ == '__main__':
             with open('../results/metrics_entropy.csv', 'w') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(["Image filename", "Energy mapping algorithm", "Original entropy", "Seam carving entropy", "Strandard resize entropy"])
+
+            with open('../results/metrics_featureMatching.csv', 'w') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Image filename", "Energy mapping algorithm", "Number of matches"])
 
     # paths definition
     IMG_PATH = "../images/" + IMG_NAME
