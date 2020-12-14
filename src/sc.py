@@ -93,15 +93,13 @@ def findSeam(img):
         for j in range(0, columns):
             # if we are in the first column (the one more to the left)
             if j == 0:
-                # index contains the minimal between M(i-1,j) and M(i-1,j+2) (pq nao j+1???)
-                # trocar por -1 e ver se tem alguma diferenca
+                # index contains the minimal between M(i-1,j) and M(i-1,j+2)
                 index = np.argmin(M[i - 1, j:j + 2])
                 backtrack[i, j] = index + j
                 minimal_energy = M[i - 1, index + j]
             # if we are in the other columns
             else:
                 # index contains the minimal between M(i-1,j-1), M(i-1,j) and M(i-1,j+2)
-                # trocar por -1 também e ver
                 index = np.argmin(M[i - 1, j - 1:j + 2])
                 backtrack[i, j] = index + j - 1
                 minimal_energy = M[i-1, index+j-1]
@@ -207,6 +205,7 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
     with open('../results/metrics_entropy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([img_name, (energyFunction.__name__).capitalize(), img_entropy, out_entropy, std_entropy])
+
 
 # Main program
 if __name__ == '__main__':
@@ -326,7 +325,7 @@ if __name__ == '__main__':
 
         # Calculate and save metrics if requested by the user
         if args["metrics"]:
-            metrics(input_image, out, std_resize_image , energyFunction)
+            metrics(input_image, out, std_resize_image, IMG_NAME, energyFunction)
         
         print("Seam carving with energy mapping function "
               + energyFunction.__name__ + " completed.")
