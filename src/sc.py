@@ -200,8 +200,8 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
 
     filename_out = 'fm_' + img_name[:-4] + '_' + energyFunction.__name__
     filename_std = 'fm_' + img_name[:-4] + '_std'
-    fm_number_of_matches_out = featureMatching(img, out, filename_out)
-    fm_number_of_matches_std = featureMatching(img, std_resize_image, filename_std)
+    fm_number_of_matches_out = featureMatching(img, out, filename_out, (energyFunction.__name__).capitalize())
+    fm_number_of_matches_std = featureMatching(img, std_resize_image, filename_std, "Standard Resize")
 
     with open('../results/metrics_energy.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -215,7 +215,7 @@ def metrics(img, out, std_resize_image, img_name, energyFunction):
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([img_name, (energyFunction.__name__).capitalize(), fm_number_of_matches_out])
 
-def featureMatching(img1, img2, filename):
+def featureMatching(img1, img2, filename, algorithm_name):
     # Initiate SIFT detector
     sift = cv2.xfeatures2d.SIFT_create()
 
@@ -248,7 +248,7 @@ def featureMatching(img1, img2, filename):
 
     fig = plt.figure(figsize=(10, 10))
     plt.imshow(img3,)
-    plt.title('Number of feature matches = ' + str(number_of_matches))
+    plt.title(algorithm_name + ' - Number of feature matches = ' + str(number_of_matches))
     figure = plt.gcf()
     #plt.show()
 
