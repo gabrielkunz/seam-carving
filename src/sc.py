@@ -246,6 +246,7 @@ def featureMatching(img1, img2, filename):
                     flags = cv2.DrawMatchesFlags_DEFAULT)
     img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 
+    fig = plt.figure(figsize=(10, 10))
     plt.imshow(img3,)
     plt.title('Number of feature matches = ' + str(number_of_matches))
     figure = plt.gcf()
